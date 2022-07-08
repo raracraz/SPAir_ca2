@@ -7,7 +7,7 @@ var dbconnect = {
         port: 3306,
         user: 'root',
         password: 'root', //your own password
-        database: 'sp_air',
+        database: 'sp_air_ca2',
         dateStrings: true
     });
     return conn;

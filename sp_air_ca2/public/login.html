@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- link jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- link jquery -->
+
+    <script>
+        // error message
+        // {
+        //     "readyState": 4,
+        //     "responseText": "{\"message\":\"Unknown error\"}",
+        //     "responseJSON": { "message": "Unknown error" },
+        //     "status": 401,
+        //     "statusText": "Unauthorized"
+        // }
+        // success message
+        //{
+        //     "userid": 1,
+        //     "username": "JohnTan",
+        //     "email": "johntan@gmail.com",
+        //     "contact": "97823902",
+        //     "password": "000d72f274093e49cf44c9312e40ad17655a6657df5e1dd74e862f36d08b764e",
+        //     "role": "Customer",
+        //     "profile_pic_url": "https://www.abc.com/john.jpg",
+        //     "created_at": "2022-07-07 14:58:15"
+        // }
+        $(document).ready(() => {
+            $("#submit").click(() => {
+                var username = $("#username").val();
+                var password = $("#password").val();
+                var bodyData = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
+                alert(bodyData)
+                // if password or username is empty, alert error
+                if (username == "" || password == "") {
+                    $("#msg").html('<strong>Error!</strong> Username or password cannot be empty');
+                    $("#msg").show();
+                    // 5 seconds later, hide error message
+                    setTimeout(() => $("#msg").html(''), 5000);
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost:3000/api/login",
+                        data: bodyData,
+                        contentType: "application/json",
+                        success: function (data) {
+                            if (data.status == 401) {
+                                $("#msg").html('<strong>Error!</strong> Username or password is incorrect');
+                                $("#msg").show();
+                                // 5 seconds later, hide error message
+                                setTimeout(() => $("#msg").html(''), 5000);
+                            } else {
+                                window.location.href = "http://localhost:3000/profile.html";
+                            }
+                        },
+                        error: function (data) {
+                            $("#msg").html('<strong>Error!</strong> Username or password is incorrect');
+                            $("#msg").show();
+                            // 5 seconds later, hide error message
+                            setTimeout(() => $("#msg").html(''), 5000);
+                        }
+                    });
+                }
+                return false;
+            })
+        })
+    </script>
+</head>
+
+<body>
+    <form>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h1>Airline Reservation System</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <span class="glyphicon glyphicon-user"></span>
+                                User Login
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="username">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username"
+                                            placeholder="Enter username">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" class="form-control" id="password" name="password"
+                                            placeholder="Enter password">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-default" id="submit">Submit</button>
+                                </div>
+                            </div>
+                            <p><span id="msg"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</body>
+
+</html>

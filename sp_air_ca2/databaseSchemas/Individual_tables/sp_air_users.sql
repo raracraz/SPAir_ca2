@@ -43,7 +43,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Terry Tan','terry@gmail.com','91234567','abc123456','Customer','https://www.abc.com/terry.jpg','2022-05-17 14:01:48'),(3,'Terry Tan2','terry2@gmail.com','91234567','abc123456','Customer','https://www.abc.com/terry.jpg','2022-05-17 14:13:52'),(4,'Terry TAN no 51','terrywitha5@gmail.com','76666666','uiriu1123','admin','https://something.jpg','2022-05-17 14:21:45'),(5,'Terry Tan4','terry4@gmail.com','91234567','abc123456','Customer','https://www.abc.com/terry.jpg','2022-05-17 14:21:53'),(6,'John Tan4','john4@gmail.com','89821212','abc123456','Customer','https://www.abc.com/john.jpg','2022-05-18 05:33:47'),(8,'John Who Tan','WhoisTHis@gmail.com','97834034','VerysecurePassword','Customer','https://cutedogs.com/34242','2022-05-27 12:41:03'),(10,'John Who Taen','WhoisTHis@gmail.come','97834034','VerysecurePassword','Customer','https://cutedogs.com/34242','2022-05-27 12:42:17'),(11,'John Who Taen3','WhoisTHis@gmail.come3','97834034','VerysecurePassword','Customer','https://cutedogs.com/34242','2022-05-27 12:43:39'),(13,'John Tan43','john4@gmail.com33','89821212','abc123456','Customer','https://www.abc.com/john.jpg','2022-06-18 21:04:39');
+
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
