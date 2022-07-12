@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- link jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- link jquery -->
+    <link rel="stylesheet" href="src/css/style.css">
+    <script>
+        $(document).ready(() => {
+            // on load page, check to see if user has token in local storage
+            var token = localStorage.getItem("token");
+            var userid = localStorage.getItem("userid");
+            if (!token) {
+                // if no token, redirect to login page
+                window.location.href = "http://localhost:3000/login.html";
+            } else {
+                // alert(token)
+                // if user has token, get user info
+                $.ajax({
+                    url: "http://localhost:3000/api/user/" + userid,
+                    type: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token,
+                    },
+                    contentType: "application/json",
+                    success: function (data) {
+                        // if user has token, get user info
+                        $("#username").html(data.username);
+                        $("#nav-username").html('<img id="profile-pic"> ' + data.username);
+                        // alert(data.profile_pic_url)
+                        var profile_pic_url = data.profile_pic_url;
+                        // alert(pro)
+                        var profile_pic = profile_pic_url.split("\\")[2];
+                        // alert(profile_pic);
+                        $("#profile-pic").attr("src", "images/" + profile_pic);
+                        $("#profile-panel-pic").attr("src", "images/" + profile_pic);
+                        $("#email").html('<div>Email: ' + data.email + '</div>');
+                        $("#profile_pic_url").html(data.profile_pic_url);
+                        $("#created_at").html('<div>Created account at: ' + data.created_at + '</div>');
+                        // hide sign up and login buttons
+                        $("#nav-right-btn").hide();
+                    },
+                    error: function (data) {
+                        // if the token is invalid, redirect to login page
+                        window.location.href = "http://localhost:3000/login/";
+                    }
+                });
+            }
+            // on click logout button, remove token from local storage and redirect to login page
+            $("#logout-btn").click(() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userid");
+                window.location.href = "http://localhost:3000/login.html";
+            });
+
+            $("#change-pic-btn").click(() => {
+                var file_data = $('#avatar').prop('files')[0];
+                var form_data = new FormData();
+                var userid = localStorage.getItem("userid");
+                form_data.append('profile_pic', file_data);
+                $.ajax({
+                    url: "http://localhost:3000/api/user/" + userid + "/profile_pic",
+                    type: 'POST',
+                    data: form_data,
+                    headers : {
+                        "Authorization": "Bearer " + token,
+                    },
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (data) {
+                        $("#picStatus").html("<div class='alert alert-success' role='alert'>Successfully uploaded!</div>");
+                        // reload the page after 3 seconds
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+
+                    },
+                    error: function (data) {
+                        $("#picStatus").html("<div class='alert alert-danger' role='alert'>Error uploading!</div>");
+                    }
+                });
+            })
+        })
+    </script>
+</head>
+
+<body>
+    <nav>
+        <div class="container-fluid navbar navbar-fixed-top">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">
+                    <img id="brand" alt="Brand" src="brand.png" height="30px" width="50px">
+                </a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="index.html">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" id="nav-right-btn">
+                <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" id="nav-right-loggedin">
+                <li id="nav-username-item"><span id="nav-username"></span></li>
+                <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span><button id="logout-btn"
+                            class="btn-link">Log Out</button></a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container profile-panel">
+        <div class="container-fluid">
+            <div class="row">
+                <h1>Profile</h1>
+            </div>
+
+        </div>
+        <hr>
+        <div class="container-fluid profile-panel-container">
+            <div class="row profile-panel-info">
+                <h3>Welcome back!</h3>
+                <h3 id="username"></h3>
+                <span id="email"></span>
+                <span id="created_at"></span>
+            </div>
+            <div class="row profile-panel-pfp">
+                <img id="profile-panel-pic">
+                <!-- button to change picture -->
+                <input id="avatar" type="file" name="avatar" />
+                <button id="change-pic-btn" class="btn btn-primary">Change Picture</button>
+                <span id="picStatus"></span>
+            </div>
+        </div>
+    </div>
+    <div class="container profile-panel">
+        <div class="container-fluid">
+            <div class="row">
+                <h1>Booking</h1>
+            </div>
+
+        </div>
+        <hr>
+        <div class="container-fluid profile-panel-container">
+            <div class="row profile-panel-info">
+                <h3>Your Upcoming flights!</h3>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="footer-clean">
+        <footer>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>Services</h3>
+                        <ul>
+                            <li><a href="#">Web design</a></li>
+                            <li><a href="#">Development</a></li>
+                            <li><a href="#">Hosting</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>About</h3>
+                        <ul>
+                            <li><a href="#">Company</a></li>
+                            <li><a href="#">Team</a></li>
+                            <li><a href="#">Legacy</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>Careers</h3>
+                        <ul>
+                            <li><a href="#">Job openings</a></li>
+                            <li><a href="#">Employee success</a></li>
+                            <li><a href="#">Benefits</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 item social"><a href="#"><i class="icon ion-social-facebook"></i></a><a
+                            href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i
+                                class="icon ion-social-snapchat"></i></a><a href="#"><i
+                                class="icon ion-social-instagram"></i></a>
+                        <p class="copyright">SP AIR © 2022</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>

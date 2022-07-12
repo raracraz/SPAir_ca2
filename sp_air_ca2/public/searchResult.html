@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- link jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- link jquery -->
+    <link rel="stylesheet" href="src/css/style.css">
+    <script>
+        $(document).ready(function () {
+            var token = localStorage.getItem('token');
+            var userid = localStorage.getItem('userid');
+            if (!token) {
+                // user not logged in
+                $("#nav-right-loggedin").hide()
+            } else {
+                // user logged in
+
+                $.ajax({
+                    url: "http://localhost:3000/api/user/" + userid,
+                    type: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token,
+                    },
+                    contentType: "application/json",
+                    success: function (data) {
+                        // if user has token, get user info
+                        var profile_pic_url = data.profile_pic_url;
+                        var profile_pic = profile_pic_url.split("\\")[2];
+                        $("#profile-pic").attr("src", "images/" + profile_pic);
+                        $("#nav-username").html('<img id="profile-pic"> ' + '<a href="http://localhost:3000/profile.html">' + data.username + '</a>');
+                        // hide sign up and login buttons
+                        $("#nav-right-btn").hide();
+                    },
+                    error: function (data) {
+                        window.location.href = "http://localhost:3000/index.html";
+                    }
+                });
+            }
+            var uri = window.location.search;
+            var param = new URLSearchParams(uri);
+            var originAirport = parseInt(param.get('origin'));
+            var destinationAirport = parseInt(param.get('destination'));
+            var departDate = param.get('departureDate');
+            var returnDate = param.get('returnDate');
+            var type = param.get('trip-type');
+            // alert(originAirport + " " + destinationAirport + " " + departDate + " " + returnDate + " " + type);
+            // alert("http://localhost:3000/api/flights/" + originAirport + "/" + destinationAirport + "/" + departDate + "/" + returnDate + "/" + type,);
+            $.ajax({
+                url: "http://localhost:3000/api/flights/" + originAirport + "/" + destinationAirport + "/" + departDate + "/" + returnDate + "/" + type,
+                type: "GET",
+                contentType: "application/json",
+                success: function (data) {
+                    // if user has token, get user info
+                    // alert(JSON.stringify(data));
+                    // alert(JSON.stringify(data));
+                    var html = "";
+                    // parse the data and display the result 
+                    var one_wayJSON = data.one_way;
+                    var returnJSON = data.return;
+                    if(one_wayJSON == undefined){
+                        one_wayJSON = [];
+                    }
+                    if(returnJSON == undefined){
+                        returnJSON = [];
+                    }
+                    // alert(JSON.stringify(one_wayJSON));
+                    // alert(JSON.stringify(returnJSON))
+                    $("#flightOriginToDestination").html("<h2 id='flight-listing-title'>Flight Listings:</h2>");
+                    // if there is no flights found, display message
+                    if (one_wayJSON.length == 0 && returnJSON.length == 0) {
+                        $("#flightOriginToDestination").append("<div class='flight-listing-notfound'><h3 class='flight-listing-notfound' id='flight-listing-title'>No flights found</h3></div>");
+                    } else {
+                        for (var i = 0; i < one_wayJSON.length; i++) {
+                            var count = i + 1;
+                            var flight_id = one_wayJSON[i].flightid;
+                            var flightCode = one_wayJSON[i].flightCode;
+                            var aircraft = one_wayJSON[i].aircraft;
+                            var embarkDate = one_wayJSON[i].embarkDate;
+                            var embarkTime = one_wayJSON[i].embarkTime;
+                            var travelTime = one_wayJSON[i].travelTime;
+                            var origin_airport = one_wayJSON[i].originAirport;
+                            var destination_airport = one_wayJSON[i].destinationAirport;
+                            var price = one_wayJSON[i].price;
+                            var one_wayhtml = "<div id='flight-listing'><div class='row card-listing'><div class='col-md-12'><div class='card'><div class='card-body'><div class='row'><div class='col-md-12 card-listing-info'><div class='row'><div class='col-md-12'><h4 class='card-title'>" + count + ". " + origin_airport + " to " + destination_airport + "</h4></div></div><div class='row flight-listing-depart'><div class='col-md-12'><p class='card-text'> Departure Date: " + embarkDate + " " + embarkTime + "</p></div></div><div class='row flight-listing-price'><div class='col-md-12'><p class='card-text'>Price: $" + price + "</p></div></div><div class='row flight-listing-status'><div class='col-md-12'><p id='flight-listing-status-title'>Economy</p></div></div><div class='row flight-listing-btn'><div class='col-md-12'><a href='http://localhost:3000/booking.html?flightid=" + flight_id + "' class='btn btn-primary'>Book Flight</a></div></div></div></div></div></div></div></div></div></div></div>";
+                            $("#flights").append(one_wayhtml);
+                        }
+
+                        for (var j = 0; j < returnJSON.length; j++) {
+                            var count = i + 1;
+                            var flight_id = returnJSON[j].flightid;
+                            var flightCode = returnJSON[j].flightCode;
+                            var aircraft = returnJSON[j].aircraft;
+                            var embarkDate = returnJSON[j].embarkDate;
+                            var embarkTime = returnJSON[j].embarkTime;
+                            var travelTime = returnJSON[j].travelTime;
+                            var origin_airport = returnJSON[j].originAirport;
+                            var destination_airport = returnJSON[j].destinationAirport;
+                            var price = returnJSON[j].price;
+                            var returnhtml = "<div id='flight-listing'><div class='row card-listing'><div class='col-md-12'><div class='card'><div class='card-body'><div class='row'><div class='col-md-12 card-listing-info'><div class='row'><div class='col-md-12'><h4 class='card-title'>" + count + ". " + origin_airport + " to " + destination_airport + "</h4></div></div><div class='row flight-listing-depart'><div class='col-md-12'><p class='card-text'> Departure Date: " + embarkDate + " " + embarkTime + "</p></div></div><div class='row flight-listing-price'><div class='col-md-12'><p class='card-text'>Price: $" + price + "</p></div></div><div class='row flight-listing-status'><div class='col-md-12'><p id='flight-listing-status-title'>Economy</p></div></div><div class='row flight-listing-btn'><div class='col-md-12'><a href='http://localhost:3000/booking.html?flightid=" + flight_id + "' class='btn btn-primary'>Book Flight</a></div></div></div></div></div></div></div></div></div></div></div>";
+                            $("#flights").append(returnhtml);
+
+                        }
+                    }
+                },
+                error: function (data) {
+                    alert("error");
+                }
+            });
+            $("#logout-btn").click(() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userid");
+                window.location.href = "http://localhost:3000/searchResult.html?origin=" + originAirport + "&destination=" + destinationAirport + "&departureDate=" + departureDate + "&returnDate=" + returnDate + "&trip-type=" + type;
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <nav>
+        <div class="container-fluid navbar navbar-fixed-top">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">
+                    <img id="brand" alt="Brand" src="brand.png" height="30px" width="50px">
+                </a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="index.html">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" id="nav-right-btn">
+                <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" id="nav-right-loggedin">
+                <li id="nav-username-item"><span id="nav-username"></span></li>
+                <li id="nav-logout-btn"><a href="index.html"><span class="glyphicon glyphicon-log-in"></span><button
+                            id="logout-btn" class="btn-link">Log Out</button></a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid flight-listing-panel">
+        <span id="flightOriginToDestination"></span>
+        <span id="flights"></span>
+    </div>
+    <div class="footer-clean">
+        <footer>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>Services</h3>
+                        <ul>
+                            <li><a href="#">Web design</a></li>
+                            <li><a href="#">Development</a></li>
+                            <li><a href="#">Hosting</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>About</h3>
+                        <ul>
+                            <li><a href="#">Company</a></li>
+                            <li><a href="#">Team</a></li>
+                            <li><a href="#">Legacy</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>Careers</h3>
+                        <ul>
+                            <li><a href="#">Job openings</a></li>
+                            <li><a href="#">Employee success</a></li>
+                            <li><a href="#">Benefits</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 item social"><a href="#"><i class="icon ion-social-facebook"></i></a><a
+                            href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i
+                                class="icon ion-social-snapchat"></i></a><a href="#"><i
+                                class="icon ion-social-instagram"></i></a>
+                        <p class="copyright">SP AIR © 2022</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>

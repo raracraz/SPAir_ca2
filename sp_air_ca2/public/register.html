@@ -16,11 +16,14 @@
     <link rel="stylesheet" href="src/css/style.css">
     <style>
         .errbg {
+            background-color: #f98484;
             text-align: center;
+            /* border radius */
+            border-radius: 5px;
         }
 
         .err {
-            color: rgb(213, 101, 101);
+            color: rgb(255, 255, 255);
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
         }
     </style>
@@ -46,48 +49,67 @@
         // }
         $(document).ready(() => {
             $("#submit").click(() => {
+                var username = $("#name").val();
                 var email = $("#email").val();
                 var password = $("#password").val();
-                // var bodyData = "{\"email\":\"" + email + "\", \"password\":\"" + password + "\"}";
+                var cfm_password = $("#cfm-password").val();
+                var contact = $("#contact").val();
+                var role = "Customer";
                 var bodyJSON = {
+                    "username": username,
                     "email": email,
-                    "password": password
+                    "password": password,
+                    "contact": contact,
+                    "role": role
                 };
-                var bodyData = JSON.stringify(bodyJSON);
+                var bodyData = JSON.stringify(bodyJSON); //new
                 alert(bodyData)
                 // if password or username is empty, alert error
-                if (email == "" || password == "") {
-                    $("#msg").html('<div class="alert alert-danger"><strong>Email or password cannot be empty!</strong></div>');
+                if (username == "") {
+                    $("#msg").html('<div class="alert alert-danger"><strong>Name cannot be empty!</strong></div>');
+                    $("#msg").show();
+                    // 5 seconds later, hide error message
+                    setTimeout(() => $("#msg").html(''), 5000);
+                } else if (email == "") {
+                    $("#msg").html('<div class="alert alert-danger"><strong>Email cannot be empty!</strong></div>');
+                    $("#msg").show();
+                    // 5 seconds later, hide error message
+                    setTimeout(() => $("#msg").html(''), 5000);
+                } else if (password == "") {
+                    $("#msg").html('<div class="alert alert-danger"><strong>Password cannot be empty!</strong></div>');
+                    $("#msg").show();
+                    // 5 seconds later, hide error message
+                    setTimeout(() => $("#msg").html(''), 5000);
+                } else if (cfm_password == "") {
+                    $("#msg").html('<div class="alert alert-danger"><strong>You must confirm your password!</strong></div>');
+                    $("#msg").show();
+                    // 5 seconds later, hide error message
+                    setTimeout(() => $("#msg").html(''), 5000);
+                } else if (contact == "") {
+                    $("#msg").html('<div class="alert alert-danger"><strong>Contact cannot be empty!</strong></div>');
+                    $("#msg").show();
+                    // 5 seconds later, hide error message
+                    setTimeout(() => $("#msg").html(''), 5000);
+                } else if (password !== cfm_password) {
+                    $("#msg").html('<div class="alert alert-danger"><strong>Your password must be the same!</strong></div>');
                     $("#msg").show();
                     // 5 seconds later, hide error message
                     setTimeout(() => $("#msg").html(''), 5000);
                 } else {
                     $.ajax({
                         type: "POST",
-                        // headers: {
-                        //     'Content-Type': 'application/json',
-                        //     'Authorization': 'Bearer ' + localStorage.getItem('token')
-                        // },
-                        url: "http://localhost:3000/api/login",
+                        url: "http://localhost:3000/api/register",
                         data: bodyData,
                         contentType: "application/json",
                         success: function (data) {
-                            if (data.status == 401) {
-                                // show red error box 
-                                $("#msg").html('<div class="alert alert-danger"><strong>Email or password is incorrect!</strong></div>');
-                                $("#msg").show();
-                                // 5 seconds later, hide error message
-                                setTimeout(() => $("#msg").html(''), 5000);
-                            } else {
-                                // save userid and token to local storage
-                                localStorage.setItem('userid', data.userid);
-                                localStorage.setItem('token', data.token);
-                                // redirect to profile page
-                                window.location.href = "http://localhost:3000/profile.html";
-                            }
+                            $("#msg").html('<div class="alert alert-success"><strong>Registered successfully!</strong><p>You will be redirected to the login page...</p></div>');
+                            setTimeout(() => window.location.href = "login.html", 5000);
+
                         },
                         error: function (data) {
-                            $("#msg").html('<div class="alert alert-danger"><strong>Email or password is incorrect!</strong></div>');
+                            var result = JSON.stringify(data);
+                            alert(result)
+                            $("#msg").html('<strong>Email or password is incorrect!</strong>');
                             $("#msg").show();
                             // 5 seconds later, hide error message
                             setTimeout(() => $("#msg").html(''), 5000);
@@ -119,69 +141,49 @@
             </ul>
         </div>
     </nav>
-    <form class="login-form">
-        <div class="container login-container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="page-header">
-                        <h1>Log in</h1>
-                    </div>
-                </div>
+    
+    <div class="container col-xl-7 register-info">
+        <h1 class="display-1">Sign up & Get Started!</h1>
+        <p>
+            After signing up, you can start booking your flights and be eligible to get <b>promotions!</b>.
+        </p>
+    <form class="container col-lg-7 register-form">
+        <div class="row">
+            <h2 class="display-2">
+                <b>Personal Information</b>
+            </h2>
+        </div>
+        <div class="form-information">
+            <div class="form-group">
+                <label for="name">Given name* (as in passport)</label>
+                <input type="text" class="form-control" id="name" placeholder="eg: John Tan Chee Xuan">
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">
-                                <span class="glyphicon glyphicon-user"></span>
-                                User Login
-                            </h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="text" class="form-control" id="email" name="email"
-                                            placeholder="Enter email">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="password">Password</label>
-                                        <input type="password" class="form-control" id="password" name="password"
-                                            placeholder="Enter password">
-                                    </div>
-                                </div>
-                                <!-- remember me button -->
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="checkbox">
-                                            <label id="rmb-me-checkbox" >
-                                                <input type="checkbox" value="remember-me"> Remember me
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <!-- reset password button -->
-                                    <div class="col-md-6">
-                                        <div id="reset-password-btn" class="form-group">
-                                            <a href="reset-password.html">Reset Password</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-default" id="submit">Submit</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label for="email">Email*</label>
+                <input type="text" class="form-control" id="email" placeholder="eg: johntan@gmail.com">
             </div>
+            <div class="form-group">
+                <label for="password">Password*</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter password">
+            </div>
+            <div class="form-group">
+                <label for="password">Confirm Password*</label>
+                <input type="password" class="form-control" id="cfm-password" placeholder="Enter password">
+            </div>
+            <div class="form-group">
+                <label for="contact">Contact number*</label>
+                <input type="text" class="form-control" id="contact" placeholder="eg: +65 91231912">
+            </div>
+        </div>
+        <div id="btn-container">
+            <button type="submit" class="btn btn-default" id="submit">Continue</button>
+        </div>
+        <div>
             <p><span class="err" id="msg"></span></p>
         </div>
     </form>
+</div>
+
     <div class="footer-clean">
         <footer>
             <div class="container">

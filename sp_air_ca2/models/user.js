@@ -2,7 +2,7 @@ const dbconnect = require('./databaseConfig');
 const crypto = require('crypto');
 
 const User = {
-    insert: function(user, callback) {
+    insert: function(username, email, password, contact, role, profile_pic_url, callback) {
         var conn = dbconnect.getConnection();
         conn.connect(
             function(err){
@@ -10,9 +10,9 @@ const User = {
                     return callback(err);
                 } else {
                     // hash the password with sha256 before inserting it into the database
-                    var hashedPassword = crypto.createHash('sha256').update(user.password).digest('hex'); // new
-                    var query = "INSERT into users (username, email, contact, password, role, profile_pic_url) values (?, ?, ?, ?, ?, ?);"
-                    conn.query(query, [user.username, user.email, user.contact, hashedPassword, user.role, user.profile_pic_url], (err, result) => {
+                    var hashedPassword = crypto.createHash('sha256').update(password).digest('hex'); // new
+                    var query = "INSERT into users (username, email, password, contact, role, profile_pic_url) values (?, ?, ?, ?, ?, ?);"
+                    conn.query(query, [username, email, hashedPassword, contact, role, profile_pic_url], (err, result) => {
                         conn.end()
                         if (err) {
                             return callback(err, null);
@@ -25,7 +25,7 @@ const User = {
             }
         );
     },
-    login: function(username, password, callback) {
+    login: function(email, password, callback) {
         var conn = dbconnect.getConnection();
         conn.connect(
             function(err){
@@ -34,8 +34,8 @@ const User = {
                 } else {
                     // hash the password with sha256 before comparing it with the one in the database
                     var hashedPassword = crypto.createHash('sha256').update(password).digest('hex'); // new
-                    var query = "SELECT * from users where username = ? and password = ?;"
-                    conn.query(query, [username, hashedPassword], (err, result) => {
+                    var query = "SELECT * from users where email = ? and password = ?;"
+                    conn.query(query, [email, hashedPassword], (err, result) => {
                         conn.end()
                         if (err) {
                             return callback(err, null);
@@ -51,6 +51,50 @@ const User = {
             }
         );
     },
+    getUserById: function(userid, callback) {
+        var conn = dbconnect.getConnection();
+        conn.connect(
+            function(err){
+                if (err) {
+                    return callback(err);
+                } else {
+                    var query = "SELECT * from users where userid = ?;"
+                    conn.query(query, [userid], (err, result) => {
+                        conn.end()
+                        if (err) {
+                            return callback(err, null);
+                        } else {
+                            if (result.length > 0) {
+                                return callback(null, result[0]);
+                            } else {
+                                return callback(null, null);
+                            }
+                        }
+                    })
+                }
+            }
+        );
+    },
+    uploadProfilePic: function(userid, profile_pic_url, callback) {
+        var conn = dbconnect.getConnection();
+        conn.connect(
+            function(err){
+                if (err) {
+                    return callback(err);
+                } else {
+                    var query = "UPDATE users SET profile_pic_url = ? WHERE userid = ?;"
+                    conn.query(query, [profile_pic_url, userid], (err, result) => {
+                        conn.end()
+                        if (err) {
+                            return callback(err, null);
+                        } else {
+                            return callback(null, result);
+                        }
+                    })
+                }
+            }
+        );
+    }
 }
 
 module.exports = User;
