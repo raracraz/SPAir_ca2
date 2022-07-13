@@ -71,7 +71,7 @@ const Flight = {
                 if (err) {
                     return callback(err);
                 } else {
-                    var query = "SELECT flights.flightid, flights.flightCode, flights.aircraft, airports.airport_name as originAirport, airports2.airport_name as destinationAirport, flights.embarkDate, flights.embarkTime, flights.travelTime, flights.price from flights join airports on flights.originAirport = airports.airportID join airports as airports2 on flights.destinationAirport = airports2.airportID where flightid = ?;"
+                    var query = "SELECT flights.flightid, flights.flightCode, flights.aircraft, airports.airport_name as originAirport, airports2.airport_name as destinationAirport, airports.airport_country as originCountry, airports2.airport_country as destinationCountry, flights.embarkDate, flights.embarkTime, flights.travelTime, flights.price from flights join airports on flights.originAirport = airports.airportID join airports as airports2 on flights.destinationAirport = airports2.airportID where flightid = ?;"
                     conn.query(query, [flightid], (err, result) => {
                         conn.end()
                         if (err) {

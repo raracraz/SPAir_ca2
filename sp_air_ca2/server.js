@@ -3,7 +3,6 @@ const port = 3000;
 const hostname = 'localhost';
 const servestatic = require('serve-static');
 const path = require('path');
-var cors = require('cors');
 
 app.use(servestatic(path.join(__dirname, '/public')));
 

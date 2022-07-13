@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- link jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- link jquery -->
+    <link rel="stylesheet" href="src/css/style.css">
+    <script>
+        $(document).ready(function () {
+            var token = localStorage.getItem('token');
+            var userid = localStorage.getItem('userid');
+            if (!token) {
+                // user not logged in
+                $("#nav-right-loggedin").hide()
+            } else {
+                // user logged in
+                $.ajax({
+                    url: "http://localhost:3000/api/user/" + userid,
+                    type: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token,
+                    },
+                    contentType: "application/json",
+                    success: function (data) {
+                        // if user has token, get user info
+                        var profile_pic_url = data.profile_pic_url;
+                        var profile_pic = profile_pic_url.split("\\")[2];
+                        $("#profile-pic").attr("src", "images/" + profile_pic);
+                        $("#nav-username").html('<img id="profile-pic"> ' + '<a href="http://localhost:3000/profile.html">' + data.username + '</a>');
+                        // hide sign up and login buttons
+                        $("#nav-right-btn").hide();
+                    },
+                    error: function (data) {
+                        window.location.href = "http://localhost:3000/index.html";
+                    }
+                });
+            }
+            var uri = window.location.search;
+            var param = new URLSearchParams(uri);
+            var flightid = param.get('flightid');
+            $.ajax({
+                url: "http://localhost:3000/api/flights/" + flightid,
+                type: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                },
+                contentType: "application/json",
+                success: function (data) {
+                    var flight = data[0];
+                    var flightid = flight.flightid;
+                    var flightCode = flight.flightCode;
+                    var aircraft = flight.aircraft;
+                    var originAirport = flight.originAirport;
+                    var destinationAirport = flight.destinationAirport;
+                    var originCountry = flight.originCountry;
+                    var destinationCountry = flight.destinationCountry;
+                    var embarkDate = flight.embarkDate;
+                    var embarkTime = flight.embarkTime;
+                    var travelTime = flight.travelTime;
+                    var price = flight.price;
+                    // alert(flightid + " " + flightCode + " " + aircraft + " " + originAirport + " " + destinationAirport + " " + embarkDate + " " + embarkTime + " " + travelTime + " " + price);
+                    var html = "<div class='container'><div class='row'><div class='col-md-12'><div class='card'><div class='card-header'><h4 class='card-title'>Flight Details</h4></div></div></div></div></div>";
+                    var html = '<div class="container">' +
+                        '<div class="row">' +
+                        '<div class="col-md-12">' +
+                        '<div class="card">' +
+                        '<div class="card-header">' +
+                        '<h4 class="card-title">Flight Details</h4>' +
+                        '</div>' +
+                        '<div class="card-body">' +
+                        '<div class="row">' +
+                        '<div class="col-md-6">' +
+                        '<div class="form-group">' +
+                        '<label>Flight Code</label>' +
+                        '<input type="text" class="form-control" value="' + flightCode + '" disabled>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label>Aircraft</label>' +
+                        '<input type="text" class="form-control" value="' + aircraft + '" disabled>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label>Origin Airport</label>' +
+                        '<input type="text" class="form-control" value="' + originAirport + '" disabled>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label>Destination Airport</label>' +
+                        '<input type="text" class="form-control" value="' + destinationAirport + '" disabled>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label>Departure Date</label>' +
+                        '<input type="text" class="form-control" value="' + embarkDate + '" disabled>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label>Embark Time</label>' +
+                        '<input type="text" class="form-control" value="' + embarkTime + '" disabled>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label>Travel Time</label>' +
+                        '<input type="text" class="form-control" value="' + travelTime + '" disabled>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label>Price</label>' +
+                        '<input type="text" class="form-control" value="' + price + '" disabled>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="col-md-6">' +
+                        '<div class="form-group">' +
+                        '<label>Flight ID</label>' +
+                        '<input type="text" class="form-control" value="' + flightid + '" disabled>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>';
+                    $("#flight-details").html(html);
+                },
+                error: function (data) {
+                    alert(JSON.stringify(data))
+                    window.location.href = "http://localhost:3000/index.html";
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <nav>
+        <div class="container-fluid navbar navbar-fixed-top">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">
+                    <img id="brand" alt="Brand" src="brand.png" height="30px" width="50px">
+                </a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="index.html">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" id="nav-right-btn">
+                <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" id="nav-right-loggedin">
+                <li id="nav-username-item"><span id="nav-username"></span></li>
+                <li id="nav-logout-btn"><a href="index.html"><span class="glyphicon glyphicon-log-in"></span><button
+                            id="logout-btn" class="btn-link">Log Out</button></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- <span id="flight-notfound"></span>
+        <span id="flight-details"></span> -->
+        <div class="container">
+            <div class="row ">
+                <div class="col-md-12">
+                    <div class="card flight-detail-container">
+                        <div class="card-header">
+                            <h2 class="card-title">Flight Details</h2>
+                        </div>
+                        <div class="card-body flight-detail-body">
+                            <div class="row flight-detail-type-body">
+                                <div class="col-md-6">
+                                    <label>type: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>travelTime:</label>
+                                </div>
+                            </div>
+                            <div class="row flight-detail-flightcode-body">
+                                <div class="col-md-6 flight-detail-flightcode">
+                                    <label>flightCode: </label>
+                                </div>
+                            </div>
+                            <div class="row flight-detail-origincountry-body">
+                                <div class="col-md-6">
+                                    <label>OriginCountry: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>DestinationCountry:</label>
+                                </div>
+                                <div class="row flight-detail-originairport-body">
+                                    <div class="col-md-6">
+                                        <label>originAirport: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>destinationAirport:</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-clean">
+        <footer>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>Services</h3>
+                        <ul>
+                            <li><a href="#">Web design</a></li>
+                            <li><a href="#">Development</a></li>
+                            <li><a href="#">Hosting</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>About</h3>
+                        <ul>
+                            <li><a href="#">Company</a></li>
+                            <li><a href="#">Team</a></li>
+                            <li><a href="#">Legacy</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>Careers</h3>
+                        <ul>
+                            <li><a href="#">Job openings</a></li>
+                            <li><a href="#">Employee success</a></li>
+                            <li><a href="#">Benefits</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 item social"><a href="#"><i class="icon ion-social-facebook"></i></a><a
+                            href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i
+                                class="icon ion-social-snapchat"></i></a><a href="#"><i
+                                class="icon ion-social-instagram"></i></a>
+                        <p class="copyright">SP AIR © 2022</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
