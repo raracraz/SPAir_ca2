@@ -1,14 +1,15 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 body {
     /* gradient background #ffafbd to #ffc3a0 */
     background-image: linear-gradient(to right, #8BC6EC 0%, #9599E2 100%);
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
-.line-black{
+.line-black {
     border-bottom: 1px solid #000;
 }
 
-.home-page-body{
+.home-page-body {
     background-color: #f2f2f2;
     margin-top: 15%;
     margin-bottom: 10%;
@@ -19,7 +20,7 @@ body {
     grid-template-columns: 10% 80% 10%;
 }
 
-.booking-menu{
+.booking-menu {
     grid-column: 2;
     grid-row: 2;
     display: grid;
@@ -29,53 +30,53 @@ body {
     margin-bottom: 10%;
 }
 
-#booking-menu-title{
+#booking-menu-title {
     grid-column: 1;
     grid-row: 1;
     font-size: 14px;
     color: rgb(0, 65, 112);
 }
 
-.form-from-input{
+.form-from-input {
     grid-column: 1;
     grid-row: 2;
 }
 
-.form-to-input{
+.form-to-input {
     grid-column: 2;
     grid-row: 2;
 }
 
-.form-depart-date{
+.form-depart-date {
     grid-column: 3;
     grid-row: 2;
 }
 
-.form-return-date{
+.form-return-date {
     grid-column: 4;
     grid-row: 2;
 }
 
-.form-check-input{
+.form-check-input {
     grid-column: 1;
     grid-row: 3;
     margin-top: -5%;
     /* center */
 }
 
-.form-submit{
+.form-submit {
     grid-column: 2;
     grid-row: 3;
 }
 
-.form-search-btn{
+.form-search-btn {
     margin-top: -5%;
     margin-left: 40%;
     /* center */
     width: 120%;
 }
 
-.flight-listing-panel{
+.flight-listing-panel {
     margin-top: 10%;
     margin-bottom: 5%;
     background-color: #f2f2f2;
@@ -84,7 +85,7 @@ body {
     width: 80%;
 }
 
-.flight-listing-notfound{
+.flight-listing-notfound {
     /* text center */
     align-items: center;
     justify-content: center;
@@ -96,7 +97,7 @@ body {
     margin-bottom: 10%;
 }
 
-#flight-listing{
+#flight-listing {
     background-color: #ffffff;
     border-radius: 3px;
     color: #000;
@@ -113,12 +114,13 @@ body {
     border-style: solid;
     border-width: 1px;
 }
+
 /* 
 #flight-listing-title{
     margin-left: 5%;
 } */
 
-.flight-listing-depart{
+.flight-listing-depart {
     grid-column: 1;
     grid-row: 2;
     font-size: 14px;
@@ -126,26 +128,26 @@ body {
     color: rgb(0, 65, 112);
 }
 
-.flight-listing-btn{
+.flight-listing-btn {
     grid-column: 1;
     grid-row: 3;
     margin-left: 1%;
 }
 
-.flight-listing-price{
+.flight-listing-price {
     grid-column: 2;
     grid-row: 4;
     text-align: center;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-.flight-listing-status{
+.flight-listing-status {
     grid-column: 2;
     grid-row: 1;
     background-color: green;
 }
 
-#flight-listing-status-title{
+#flight-listing-status-title {
     color: #fff;
     font-size: 14px;
     text-align: center;
@@ -153,15 +155,15 @@ body {
 }
 
 
-.card-listing-info{
+.card-listing-info {
     display: grid;
     grid-template-columns: 80% 20%;
     grid-template-rows: 30% 25% 10% 15%;
 }
 
-.flight-detail-container{
-    margin-top: 10%;
+.flight-detail-container {
     margin-bottom: 5%;
+    padding-top: 1%;
     background-color: #f2f2f2;
     width: 80%;
     margin-left: 10%;
@@ -169,59 +171,443 @@ body {
     box-shadow: 0px 0px 10px #888888;
 }
 
-.flight-detail-body{
+
+.flight-detail-body {
     background-color: #ffffff;
     border-radius: 3px;
     color: #000;
     box-shadow: 0px 0px 0px 0px #888888;
     width: 90%;
     margin-left: 5%;
-    margin-bottom: 1%;
+    margin-bottom: 5%;
     margin-top: 2%;
     padding-left: 3%;
     padding-right: 3%;
     padding-top: 2%;
+    padding-bottom: 5%;
     display: grid;
-    grid-template-columns: 70% 30%;
-    grid-template-rows: 20px 30px 20px 20px;
+    grid-template-columns: 30% 20% 30% 20%;
+    grid-template-rows: 20% 20% 30% 40%;
     border-color: #918d8d;
     border-style: solid;
     border-width: 1px;
 }
 
-.flight-detail-type-body{
+.flight-detail-type-body {
     grid-column: 1;
     grid-row: 1;
     font-size: 14px;
+    margin-top: -1%;
     margin-left: 1%;
     color: rgb(0, 65, 112);
 }
 
-.flight-detail-flightcode-body{
+.flight-detail-flightcode-body {
     grid-column: 1;
     grid-row: 2;
-    font-size: 14px;
-    margin-left: 1%;
+    font-size: 30px;
+    margin-top: -2%;
+    margin-bottom: -3%;
+    margin-left: -4%;
     color: rgb(0, 65, 112);
 }
 
-.flight-detail-origincountry-body{
+.flight-detail-origin-body {
     grid-column: 1;
     grid-row: 3;
     font-size: 14px;
-    margin-left: 1%;
+    margin-left: 2%;
     color: rgb(0, 65, 112);
 }
 
-.flight-detail-originairport-body{
-    grid-column: 1;
-    grid-row: 4;
+#originCountry {
+    font-size: 30px;
+}
+
+#originAirport {
+    font-size: 20px;
+    color: #4b4c4d;
+}
+
+.flight-detail-destination-body {
+    grid-column: 3;
+    grid-row: 3;
     font-size: 14px;
+    margin-left: 2%;
+    color: rgb(0, 65, 112);
+}
+
+#destinationCountry {
+    font-size: 30px;
+}
+
+#destinationAirport {
+    font-size: 20px;
+    color: #4b4c4d;
+}
+
+.flight-detail-to-box {
+    grid-column: 2;
+    grid-row: 3;
+    width: 100%;
+    margin-top: 10%;
+}
+
+.flight-detail-book-economy {
+    grid-column: 4;
+    grid-row: 1;
+    width: 100%;
+    margin-left: 1%;
+    background-color: green;
+    border-radius: 3px;
+    border-color: #4b4c4d;
+    margin-top: 1%;
+    cursor: pointer;
+    text-align: center;
+    line-height: 15px;
+    color: white;
+}
+
+.flight-detail-book-business {
+    grid-column: 4;
+    grid-row: 2;
+    width: 100%;
+    margin-left: 1%;
+    background-color: rgb(47, 0, 128);
+    border-radius: 3px;
+    border-color: #4b4c4d;
+    margin-top: 1%;
+    text-align: center;
+    cursor: pointer;
+    line-height: 15px;
+    color: white;
+}
+
+#flight-booking-economy-btn-s {
+    font-size: 16px;
+    color: #ffffff;
+}
+
+#flight-booking-business-btn-s {
+    font-size: 16px;
+    color: #ffffff;
+}
+
+#flight-detail-plane-icon {
+    /* float center */
+    margin-left: 30%;
+    /* make the size bigger */
+    width: 50px;
+    height: 50px;
+}
+
+#flight-detail-to-line {
+    border-top-color: #000;
+    z-index: 2;
+    position: absolute;
+
+}
+
+#flight-detail-line-bottom {
+    width: 80%;
+    margin-left: 10%;
+    margin-top: -3%;
+    padding-bottom: 1px;
+}
+
+#flight-detail-line-top {
+    width: 80%;
+    margin-left: 10%;
+    margin-top: -2%;
+    padding-top: 5px;
+}
+
+.flight-notloggedin-error-body{
+    margin-top: 10%;
+    color: red;
+    width: 80%;
+    margin-left: 10%;
+    text-align: center;
+}
+
+.booking-main-title{
+    margin-left: 5%;
+}
+
+.booking-body {
+    background-color: #fff;
+    border-radius: 3px;
+    width: 80%;
+    margin-left: 10%;
+    margin-bottom: 5%;
+    box-shadow: 0px 0px 0px 1px #888888;
+    margin-top: 10%;
+}
+
+.booking-personal-details {
+    border-color: #4b4c4d;
+    border-width: 1px;
+    width: 80%;
+    margin-left: 10%;
+    display: grid;
+    grid-template-columns: 320px 320px ;
+    grid-template-rows: 60px 60px 60px 50px 50px;
+    /* grid-template-rows: 20% 20% 20% 20% 20%; */
+}
+
+#booking-title {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 20px;
+    margin-top: -2%;
+    margin-left: 2%;
+    color: rgb(0, 65, 112);
+}
+
+#booking-first-name {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 14px;
+    margin-top: -1%;
     margin-left: 1%;
     color: rgb(0, 65, 112);
 }
 
-.card-title{
+
+
+@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
+
+* {
+    font-family: "Roboto";
+}
+
+.title{
+    grid-row: 1;
+    grid-column: 1;
+    margin-left: 20%;
+}
+
+.booking-input{
+    grid-row: 2;
+    grid-column: 1;
+}
+
+.booking-firstname{
+    grid-row: 1;
+    grid-column: 1;
+    margin-left: 10%;
+}
+
+.booking-lastname{
+    grid-row: 1;
+    grid-column: 2;
+    margin-left: 10%;
+}
+
+.booking-passport{
+    grid-column: 1;
+    grid-row: 2;
+    margin-left: 10%;
+}
+
+.booking-nationality{
+    grid-column: 2;
+    grid-row: 2;
+    margin-left: 10%;
+}
+
+.booking-age{
+    grid-column: 1;
+    grid-row: 3;
+    margin-left: 10%;
+}
+
+#booking-age-input{
+    margin-top: 10%;
+    width: 130%;
+    text-align: center;
+}
+
+#booking-submit-btn{
+    grid-column: 1/2;
+    grid-row: 4;
+    cursor: pointer;
+    border-radius: 10px;
+    background-color: #1e4bd1;
+    text-align: center;
+    width: 40%;
+    /* margin-left: 25%; */
+    margin-left: 70%;
+}
+.booking-btn{
+    color: white;
+}
+.booking-btn:hover{
+    color: #ffffff;
+}
+
+.booking-btn{
+    color: #ffffff;
+}
+
+.booking-btn-title{
+    margin-top: -5%;
+}
+
+div.booking-options-body {
+    justify-content: space-around;
+    margin-top: 30px;
+    border: 1px solid rgb(215, 215, 215);
+    padding-top: 2%;
+    padding-left: 5%;
+    border-radius: 4px;
+    margin-bottom: 1%;
+    width: 80%;
+    display: grid;
+    grid-template-columns: 30% 30% 20% 20%;
+    grid-template-rows: 20% 20% 20% 20% 20%;
+}
+
+:root {
+    --omrs-color-ink-lowest-contrast: rgba(47, 60, 85, 0.18);
+    --omrs-color-ink-low-contrast: rgba(60, 60, 67, 0.3);
+    --omrs-color-ink-medium-contrast: rgba(19, 19, 21, 0.6);
+    --omrs-color-interaction: #1e4bd1;
+    --omrs-color-interaction-minus-two: rgba(73, 133, 224, 0.12);
+    --omrs-color-danger: #b50706;
+    --omrs-color-bg-low-contrast: #eff1f2;
+    --omrs-color-ink-high-contrast: #121212;
+    --omrs-color-bg-high-contrast: #ffffff;
+
+}
+
+/** END: Non Openmrs CSS **/
+div.omrs-input-group {
+    margin-bottom: 1rem;
+    position: relative;
+    width: 80%;
+}
+
+/* Input*/
+.omrs-input-underlined>input,
+.omrs-input-filled>input {
+    border: none;
+    border-bottom: 0.125rem solid var(--omrs-color-ink-medium-contrast);
+    width: 100%;
+    /* height: 2rem; */
+    font-size: 1.8rem;
+    padding-left: 0.875rem;
+    line-height: 147.6%;
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.omrs-input-underlined>input:focus,
+.omrs-input-filled>input:focus {
+    outline: none;
+}
+
+.omrs-input-underlined>.omrs-input-label,
+.omrs-input-filled>.omrs-input-label {
+    position: absolute;
+    top: 0.9375rem;
+    left: 0.875rem;
+    line-height: 147.6%;
+    color: var(--omrs-color-ink-medium-contrast);
+    transition: top .2s;
+}
+
+.omrs-input-underlined>svg,
+.omrs-input-filled>svg {
+    position: absolute;
+    top: 0.9375rem;
+    right: 0.875rem;
+    fill: var(--omrs-color-ink-medium-contrast);
+}
+
+.omrs-input-underlined>.omrs-input-helper,
+.omrs-input-filled>.omrs-input-helper {
+    font-size: 0.9375rem;
+    color: var(--omrs-color-ink-medium-contrast);
+    letter-spacing: 0.0275rem;
+    margin: 0.125rem 0.875rem;
+}
+
+.omrs-input-underlined>input:hover,
+.omrs-input-filled>input:hover {
+    background: var(--omrs-color-interaction-minus-two);
+    border-color: var(--omrs-color-ink-high-contrast);
+}
+
+.omrs-input-underlined>input:focus+.omrs-input-label,
+.omrs-input-underlined>input:valid+.omrs-input-label,
+.omrs-input-filled>input:focus+.omrs-input-label,
+.omrs-input-filled>input:valid+.omrs-input-label {
+    top: 0;
+    font-size: 0.9375rem;
+    margin-bottom: 32px;
+}
+
+.omrs-input-underlined:not(.omrs-input-danger)>input:focus+.omrs-input-label,
+.omrs-input-filled:not(.omrs-input-danger)>input:focus+.omrs-input-label {
+    color: var(--omrs-color-interaction);
+}
+
+.omrs-input-underlined:not(.omrs-input-danger)>input:focus,
+.omrs-input-filled:not(.omrs-input-danger)>input:focus {
+    border-color: var(--omrs-color-interaction);
+}
+
+.omrs-input-underlined:not(.omrs-input-danger)>input:focus~svg,
+.omrs-input-filled:not(.omrs-input-danger)>input:focus~svg {
+    fill: var(--omrs-color-ink-high-contrast);
+}
+
+/** DISABLED **/
+
+.omrs-input-underlined>input:disabled {
+    background: var(--omrs-color-bg-low-contrast);
+    cursor: not-allowed;
+}
+
+.omrs-input-underlined>input:disabled+.omrs-input-label,
+.omrs-input-underlined>input:disabled~.omrs-input-helper {
+    color: var(--omrs-color-ink-low-contrast);
+}
+
+.omrs-input-underlined>input:disabled~svg {
+    fill: var(--omrs-color-ink-low-contrast);
+}
+
+
+/** DANGER **/
+
+.omrs-input-underlined.omrs-input-danger>.omrs-input-label,
+.omrs-input-underlined.omrs-input-danger>.omrs-input-helper,
+.omrs-input-filled.omrs-input-danger>.omrs-input-label,
+.omrs-input-filled.omrs-input-danger>.omrs-input-helper {
+    color: var(--omrs-color-danger);
+}
+
+.omrs-input-danger>svg {
+    fill: var(--omrs-color-danger);
+}
+
+.omrs-input-danger>input {
+    border-color: var(--omrs-color-danger);
+}
+
+.omrs-input-underlined>input {
+    background: var(--omrs-color-bg-high-contrast);
+}
+
+.omrs-input-filled>input {
+    background: var(--omrs-color-bg-low-contrast);
+}
+
+/* omrs end */
+
+.card-title {
     margin-left: 5%;
 }
 
@@ -235,19 +621,23 @@ body {
     box-shadow: 3px 3px 10px 0px rgb(116, 116, 116);
     overflow: hidden;
 }
-.login-form{
+
+.login-form {
     padding-top: 7%;
     padding-bottom: 12%;
 }
-#reset-password-btn{
+
+#reset-password-btn {
     /* float right */
     float: right;
     margin-right: 5%;
 }
-#rmb-me-checkbox{
+
+#rmb-me-checkbox {
     float: left;
     margin-left: 5%;
 }
+
 .page-header {
     margin-top: 0;
     margin-bottom: 0;
@@ -278,21 +668,19 @@ body {
     padding-top: 5%;
     padding-bottom: 5%;
     border-bottom: none;
-    margin-left: auto;
-    margin-right: auto;
     width: 80%;
 }
 
 .display-1 {
     color: rgb(32, 64, 133);
+    margin-left: 15%;
 }
 
 .register-form {
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 3px 3px 10px 0px rgb(116, 116, 116);
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 15%
 }
 
 .form-group {
@@ -311,33 +699,33 @@ body {
     font-size: 10px;
 }
 
-#username{
+#username {
     margin-bottom: 5%;
 }
 
-#nav-username-item{
+#nav-username-item {
     margin-top: 7%;
 }
 
-.profile-panel{
+.profile-panel {
     margin-top: 5%;
     margin-left: auto;
     margin-right: auto;
     width: 50%;
 }
 
-.profile-panel-container{
+.profile-panel-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 10px;
 }
 
-.profile-panel-info{
+.profile-panel-info {
     grid-column: 1;
     margin-top: -5%;
 }
 
-.profile-panel-pfp{
+.profile-panel-pfp {
     grid-column: 2;
     margin-top: -5%;
     display: grid;
@@ -345,7 +733,7 @@ body {
     grid-template-rows: 70% 10% 20%;
 }
 
-#profile-panel-pic{
+#profile-panel-pic {
     grid-column: 2;
     grid-row: 1;
     border-radius: 50%;
@@ -356,20 +744,20 @@ body {
     margin-top: -8%;
 }
 
-#avatar{
+#avatar {
     grid-column: 2;
     grid-row: 2;
     margin-left: auto;
     margin-right: auto;
 }
 
-#change-pic-btn{
+#change-pic-btn {
     grid-column: 2;
     grid-row: 3;
     margin-top: 2%;
 }
 
-#profile-pic{
+#profile-pic {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -377,6 +765,7 @@ body {
     margin-right: auto;
     display: inline-block;
 }
+
 .footer-clean {
     padding: 50px 0;
     background-color: #fff;

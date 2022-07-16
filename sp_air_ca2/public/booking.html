@@ -23,6 +23,7 @@
             if (!token) {
                 // user not logged in
                 $("#nav-right-loggedin").hide()
+                window.location.href = "login.html";
             } else {
                 // user is logged in
                 $.ajax({
@@ -56,64 +57,13 @@
                     }
                 });
             };
-            // get all airports
-            $.ajax({
-                url: "http://localhost:3000/api/airport",
-                type: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token,
-                },
-                contentType: "application/json",
-                success: function (data) {
-                    // if user has token, get user info
-                    var airports = data;
-                    var airport_list = [];
-                    for (var i = 0; i < airports.length; i++) {
-                        var airport = airports[i];
-                        var airport_name = airport.airport_name;
-                        var airport_id = airport.airportid;
-                        if (airport_name) {
-                            $('#origin').append('<option value="' + airport_id + '">' + airport_name + '</option>');
-                            $('#destination').append('<option value="' + airport_id + '">' + airport_name + '</option>');
-                        }
-                    }
-                },
-                error: function (data) {
-                    // if the token is invalid, redirect to login page
-                    window.location.href = "http://localhost:3000/index.html/";
-                }
-            });
-
-            $("#logout-btn").click(() => {
-                localStorage.removeItem("token");
-                localStorage.removeItem("userid");
-                window.location.href = "http://localhost:3000/index.html";
-            });
-            
-            $("#form-submit-btn").click(() => {
-                // get the value from the input
-                var originAirport = $("#origin").val();
-                var destinationAirport = $("#destination").val();
-                var departureDate = $("#depart-date").val();
-                var returnDate = $("#return-date").val();   
-                // replace the - with /
-                // get the value of type from the radio
-                // alert(originAirport + " " + destinationAirport + " " + departureDate + " " + returnDate);
-                var type = $('input[name=trip-type]:checked').val();
-                if(!originAirport || !destinationAirport || !departureDate || !returnDate){
-                    $("#form-error").html('<div class="alert alert-danger"><strong>Please fill in all fields</strong></div>');
-                    // $("#form-error").show();
-                    setTimeout(() => $("#form-error").html(''), 5000);
-                } else if (originAirport == destinationAirport){
-                    $("#form-error").html('<div class="alert alert-danger"><strong>Origin Airport cannot be the same as Destination Airport</strong></div>');
-                    // $("#form-error").show();
-                    setTimeout(() => $("#form-error").html(''), 5000);
-                } else {
-                    // redirect to the search page
-                    window.location.href = "http://localhost:3000/searchResult.html?origin=" + originAirport + "&destination=" + destinationAirport + "&departureDate=" + departureDate + "&returnDate=" + returnDate + "&trip-type=" + type;
-                }
-            })
+            var bookingageinputhtml = "";
+            for(var i = 0; i < 120; i++){
+                bookingageinputhtml += '<option value="' + i + '">' + i + '</option>';
+            }
+            $("#booking-age-input").append(bookingageinputhtml);
+            var booking_btn_html = '<a class="row booking-btn"><p class="booking-btn-title">Add to cart</p></a>';
+            $("#booking-submit-btn").html(booking_btn_html);
         });
     </script>
 </head>
@@ -142,52 +92,54 @@
             </ul>
         </div>
     </nav>
-    <div class="container-fluid home-page-body">
-        <div class="book-flight-box">
-            <h2>Book Trip</h2>
-            <hr class="line-black">
-            <div class="booking-menu">
-                <h4 id="booking-menu-title">Hi, where would you like to Go?</h4>
-                <!-- dropdown box for user to put origin airport and destination airport -->
-                <div class="form-from-input">
-                    <label> From</label>
-                    <select class="form-control" id="origin">
-                        <option value="">Select Airport</option>
-                    </select>
-                </div>
-                <div class="form-to-input">
-                    <label> To</label>
-                    <select class="form-control" id="destination">
-                        <option value="">Select Airport</option>
-                    </select>
-                </div>
-                <div class="form-depart-date">
-                    <label> Departure Date</label>
-                    <input type="date" class="form-control" id="depart-date">
-                </div>
-                <div class="form-return-date">
-                    <label> Return Date</label>
-                    <input type="date" class="form-control" id="return-date">
-                </div>
-                <!-- radio for user to select if they want one way trip or return flights -->
-                <div class="form-check-input">
-                    <label class="form-check-label">
-                        <input type="radio" class="form-radio" name="trip-type" id="one-way" value="one_way"
-                            checked>
-                        One Way
-                        <input type="radio" class="form-radio" name="trip-type" id="return" value="return">
-                        Return trip
+
+    <div class="container booking-body">
+        <div class="booking-main-title">
+            <h2>Passenger Details</h2>
+            <p>Each passenger must hold a valid passport (and visa(s), If required) to be allowed entry into each
+                destination on the flight itinerary. Singapore Airlines cannot be held responsible if a passenger is
+                denied
+                entry and/or deported by any local authority.</p>
+        </div>
+        <hr class="line-black">
+        <div class="container booking-options-body">
+            <h4 class="title">Personal details</h4>
+            <div class="booking-personal-details booking-input row">
+                <div class="omrs-input-group booking-firstname">
+                    <label class="omrs-input-underlined">
+                        <input required>
+                        <span class="omrs-input-label">First name</span>
                     </label>
                 </div>
-                <div class="form-submit">
-                    <button id="form-submit-btn" type="submit" class="btn btn-primary form-search-btn">Search</button>
+                <div class="omrs-input-group booking-lastname">
+                    <label class="omrs-input-underlined ">
+                        <input required>
+                        <span class="omrs-input-label">Last name</span>
+                    </label>
                 </div>
+                <div class="omrs-input-group booking-passport">
+                    <label class="omrs-input-underlined ">
+                        <input required>
+                        <span class="omrs-input-label">Passport number</span>
+                    </label>
+                </div>
+                <div class="omrs-input-group booking-nationality">
+                    <label class="omrs-input-underlined ">
+                        <input required>
+                        <span class="omrs-input-label">Nationality</span>
+                    </label>
+                </div>
+                <div class="omrs-input-group booking-age">
+                    <label class="omrs-input-underlined ">
+                        <select class="form-control" id="booking-age-input">
+                            <option value="">Age</option>
+                        </select>
+                    </label>
+                </div>
+                <span id="booking-submit-btn"></span>
             </div>
-            <span id="form-error"></span>
         </div>
     </div>
-
-
 
     <div class="footer-clean">
         <footer>

@@ -8,6 +8,7 @@
     <title>Homepage</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
@@ -23,8 +24,11 @@
             if (!token) {
                 // user not logged in
                 $("#nav-right-loggedin").hide()
+                var notloggedinhtml = '<div class="alert alert-danger flight-notloggedin-error-body">You must be logged in to book a flight. Click here to <a href="register.html">register</a> or <a href="login.html">login</a></div>'
+                $("#booking-notloggedin-error").html(notloggedinhtml).show();
             } else {
                 // user logged in
+                $(".flight-detail-container").attr("style", "margin-top: 10%;");
                 $.ajax({
                     url: "http://localhost:3000/api/user/" + userid,
                     type: "GET",
@@ -35,10 +39,18 @@
                     contentType: "application/json",
                     success: function (data) {
                         // if user has token, get user info
+                        $("#username").html(data.username);
+                        $("#nav-username").html('<img id="profile-pic"> ' + data.username);
+                        // alert(data.profile_pic_url)
                         var profile_pic_url = data.profile_pic_url;
+                        // alert(pro)
                         var profile_pic = profile_pic_url.split("\\")[2];
+                        // alert(profile_pic);
                         $("#profile-pic").attr("src", "images/" + profile_pic);
-                        $("#nav-username").html('<img id="profile-pic"> ' + '<a href="http://localhost:3000/profile.html">' + data.username + '</a>');
+                        $("#profile-panel-pic").attr("src", "images/" + profile_pic);
+                        $("#email").html('<div>Email: ' + data.email + '</div>');
+                        $("#profile_pic_url").html(data.profile_pic_url);
+                        $("#created_at").html('<div>Created account at: ' + data.created_at + '</div>');
                         // hide sign up and login buttons
                         $("#nav-right-btn").hide();
                     },
@@ -50,6 +62,7 @@
             var uri = window.location.search;
             var param = new URLSearchParams(uri);
             var flightid = param.get('flightid');
+            var type = param.get('type');
             $.ajax({
                 url: "http://localhost:3000/api/flights/" + flightid,
                 type: "GET",
@@ -71,64 +84,49 @@
                     var embarkTime = flight.embarkTime;
                     var travelTime = flight.travelTime;
                     var price = flight.price;
-                    // alert(flightid + " " + flightCode + " " + aircraft + " " + originAirport + " " + destinationAirport + " " + embarkDate + " " + embarkTime + " " + travelTime + " " + price);
-                    var html = "<div class='container'><div class='row'><div class='col-md-12'><div class='card'><div class='card-header'><h4 class='card-title'>Flight Details</h4></div></div></div></div></div>";
-                    var html = '<div class="container">' +
-                        '<div class="row">' +
-                        '<div class="col-md-12">' +
-                        '<div class="card">' +
-                        '<div class="card-header">' +
-                        '<h4 class="card-title">Flight Details</h4>' +
-                        '</div>' +
-                        '<div class="card-body">' +
-                        '<div class="row">' +
-                        '<div class="col-md-6">' +
-                        '<div class="form-group">' +
-                        '<label>Flight Code</label>' +
-                        '<input type="text" class="form-control" value="' + flightCode + '" disabled>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        '<label>Aircraft</label>' +
-                        '<input type="text" class="form-control" value="' + aircraft + '" disabled>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        '<label>Origin Airport</label>' +
-                        '<input type="text" class="form-control" value="' + originAirport + '" disabled>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        '<label>Destination Airport</label>' +
-                        '<input type="text" class="form-control" value="' + destinationAirport + '" disabled>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        '<label>Departure Date</label>' +
-                        '<input type="text" class="form-control" value="' + embarkDate + '" disabled>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        '<label>Embark Time</label>' +
-                        '<input type="text" class="form-control" value="' + embarkTime + '" disabled>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        '<label>Travel Time</label>' +
-                        '<input type="text" class="form-control" value="' + travelTime + '" disabled>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        '<label>Price</label>' +
-                        '<input type="text" class="form-control" value="' + price + '" disabled>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="col-md-6">' +
-                        '<div class="form-group">' +
-                        '<label>Flight ID</label>' +
-                        '<input type="text" class="form-control" value="' + flightid + '" disabled>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>';
-                    $("#flight-details").html(html);
+                    $("#type").html(type)
+                    $("#aircraft").html(aircraft);
+                    var travelTimeDisplay = parseInt(travelTime.split(":")[0]) + " Hours " + parseInt(travelTime.split(":")[1]) + " Minutes";
+                    $("#travelTime").html(travelTimeDisplay);
+                    $("#flightCode").html(flightCode);
+                    $("#originAirport").html(originAirport);
+                    $("#destinationAirport").html(destinationAirport);
+                    $("#originCountry").html(originCountry);
+                    $("#destinationCountry").html(destinationCountry);
+                    $("#embarkDate").html(embarkDate + " " + embarkTime);
+                    $("#embarkDate2").html(embarkDate + " " + embarkTime);
+                    // parse the travelTime to get the minutes
+                    var totalTravelTimeMinutes = parseInt(travelTime.split(":")[1]) + (parseInt(travelTime.split(":")[0]) * 60);
+                    // add travel time to embark date to get reach date and time
+                    var reachDate = new Date(embarkDate + " " + embarkTime);
+                    var reachTime = new Date(reachDate.getTime() + totalTravelTimeMinutes * 60000);
+                    $("#reachDate").html(reachDate.getFullYear() + "-" + (reachDate.getMonth() + 1) + "-" + reachDate.getDate() + " " + reachTime.getHours() + ":" + reachTime.getMinutes());
+                    var economy_btn_html = '<a class="row" id="flight-booking-economy-btn-s">Economy</a>';
+                    // alert(economy_btn_html);
+                    var business_btn_html = '<a class="row" id="flight-booking-business-btn-s">Business</a>';
+                    $("#flight-booking-economy-btn").html(economy_btn_html).click(
+                        function () {
+                            if (token) {
+                                window.location.href = "booking.html?flightid=" + flightid + "&seatType=economy";
+                            } else {
+                                window.location.href = "http://localhost:3000/login.html";
+                            }
+                        }
+                    );
+                    $("#flight-booking-business-btn").html(business_btn_html).click(
+                        function () {
+                            if (token) {
+                                window.location.href = "booking.html?flightid=" + flightid + "&seatType=business";
+                            } else {
+                                window.location.href = "http://localhost:3000/login.html";
+                            }
+                        }
+                    );
+                    $("#logout-btn").click(() => {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("userid");
+                        window.location.href = "http://localhost:3000/flightDetails.html?flightid=" + flightid;
+                    });
                 },
                 error: function (data) {
                     alert(JSON.stringify(data))
@@ -165,48 +163,71 @@
     </nav>
 
     <div class="container">
-        <!-- <span id="flight-notfound"></span>
-        <span id="flight-details"></span> -->
-        <div class="container">
-            <div class="row ">
-                <div class="col-md-12">
-                    <div class="card flight-detail-container">
-                        <div class="card-header">
-                            <h2 class="card-title">Flight Details</h2>
+        <span id="booking-notloggedin-error"></span>
+        <div class="row ">
+            <div class="col-md-12 flight-detail-container-border">
+                <div class="card flight-detail-container">
+                    <div class="card-header">
+                        <h2 class="card-title">Flight Details</h2>
+                    </div>
+                    <div id="flight-detail-line-top">
+                        <hr class="line-black">
+                    </div>
+                    <div class="card-body flight-detail-body">
+                        <div class="row flight-detail-type-body">
+                            <div class="col-md-12">
+                                <!-- replace with the actual code -->
+                                <span id="type"></span>
+                                •
+                                <span id="travelTime"></span>
+                            </div>
                         </div>
-                        <div class="card-body flight-detail-body">
-                            <div class="row flight-detail-type-body">
-                                <div class="col-md-6">
-                                    <label>type: </label>
-                                </div>
-                                <div class="col-md-6">
-                                    <label>travelTime:</label>
-                                </div>
+                        <div class="row flight-detail-flightcode-body">
+                            <div class="col-md-6 flight-detail-flightcode">
+                                <span id="flightCode"></span>
                             </div>
-                            <div class="row flight-detail-flightcode-body">
-                                <div class="col-md-6 flight-detail-flightcode">
-                                    <label>flightCode: </label>
+                        </div>
+                        <div class="row flight-detail-origin-body">
+                            <div class="col-md-12">
+                                <div class="row flight-detail-origin-country">
+                                    <span id="originCountry"></span>
                                 </div>
-                            </div>
-                            <div class="row flight-detail-origincountry-body">
-                                <div class="col-md-6">
-                                    <label>OriginCountry: </label>
+                                <div class="row">
+                                    <span id="originAirport"></span>
                                 </div>
-                                <div class="col-md-6">
-                                    <label>DestinationCountry:</label>
-                                </div>
-                                <div class="row flight-detail-originairport-body">
-                                    <div class="col-md-6">
-                                        <label>originAirport: </label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>destinationAirport:</label>
-                                    </div>
+                                <div class="row">
+                                    <span id="embarkDate"></span>
                                 </div>
                             </div>
                         </div>
+                        <div class="flight-detail-to-box">
+                            <!-- show airplane icon -->
+                            <span class="iconify" data-icon="ion:airplane" id="flight-detail-plane-icon"></span>
+                            <!-- <hr id="flight-detail-to-line"> -->
+                        </div>
+                        <div class="row flight-detail-destination-body">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <span id="destinationCountry"></span>
+                                </div>
+                                <div class="row">
+                                    <span id="destinationAirport"></span>
+                                </div>
+                                <div class="row">
+                                    <span id="reachDate"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="flight-detail-book-economy" id="flight-booking-economy-btn"></span>
+                        <!-- <a href='booking.html?flightid=' class='row flight-detail-book-economy'>Economy</a> -->
+                        <span class="flight-detail-book-business" id="flight-booking-business-btn"></span>
+                        <!-- <a href="booking.html" class='row flight-detail-book-business'>Business</a> -->
+                    </div>
+                    <div id="flight-detail-line-bottom">
+                        <hr class="line-black">
                     </div>
                 </div>
+                <hr>
             </div>
         </div>
     </div>

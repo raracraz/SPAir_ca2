@@ -36,10 +36,18 @@
                     contentType: "application/json",
                     success: function (data) {
                         // if user has token, get user info
+                        $("#username").html(data.username);
+                        $("#nav-username").html('<img id="profile-pic"> ' + data.username);
+                        // alert(data.profile_pic_url)
                         var profile_pic_url = data.profile_pic_url;
+                        // alert(pro)
                         var profile_pic = profile_pic_url.split("\\")[2];
+                        // alert(profile_pic);
                         $("#profile-pic").attr("src", "images/" + profile_pic);
-                        $("#nav-username").html('<img id="profile-pic"> ' + '<a href="http://localhost:3000/profile.html">' + data.username + '</a>');
+                        $("#profile-panel-pic").attr("src", "images/" + profile_pic);
+                        $("#email").html('<div>Email: ' + data.email + '</div>');
+                        $("#profile_pic_url").html(data.profile_pic_url);
+                        $("#created_at").html('<div>Created account at: ' + data.created_at + '</div>');
                         // hide sign up and login buttons
                         $("#nav-right-btn").hide();
                     },
@@ -93,7 +101,7 @@
                             var origin_airport = one_wayJSON[i].originAirport;
                             var destination_airport = one_wayJSON[i].destinationAirport;
                             var price = one_wayJSON[i].price;
-                            var one_wayhtml = "<div id='flight-listing'><div class='row card-listing'><div class='col-md-12'><div class='card'><div class='card-body'><div class='row'><div class='col-md-12 card-listing-info'><div class='row'><div class='col-md-12'><h4 class='card-title'>" + count + ". " + origin_airport + " to " + destination_airport + "</h4></div></div><div class='row flight-listing-depart'><div class='col-md-12'><p class='card-text'> Departure Date: " + embarkDate + " " + embarkTime + "</p></div></div><div class='row flight-listing-price'><div class='col-md-12'><p class='card-text'>Price: $" + price + "</p></div></div><div class='row flight-listing-status'><div class='col-md-12'><p id='flight-listing-status-title'>Economy</p></div></div><div class='row flight-listing-btn'><div class='col-md-12'><a href='http://localhost:3000/flightDetails.html?flightid=" + flight_id + "' class='btn btn-primary'>Book Flight</a></div></div></div></div></div></div></div></div></div></div></div>";
+                            var one_wayhtml = "<div id='flight-listing'><div class='row card-listing'><div class='col-md-12'><div class='card'><div class='card-body'><div class='row'><div class='col-md-12 card-listing-info'><div class='row'><div class='col-md-12'><h4 class='card-title'>" + count + ". " + origin_airport + " to " + destination_airport + "</h4></div></div><div class='row flight-listing-depart'><div class='col-md-12'><p class='card-text'> Departure Date: " + embarkDate + " " + embarkTime + "</p></div></div><div class='row flight-listing-price'><div class='col-md-12'><p class='card-text'>Price: $" + price + "</p></div></div><div class='row flight-listing-status'><div class='col-md-12'><p id='flight-listing-status-title'>Economy</p></div></div><div class='row flight-listing-btn'><div class='col-md-12'><a href='http://localhost:3000/flightDetails.html?flightid=" + flight_id + "&type=" + type + "' class='btn btn-primary'>Book Flight</a></div></div></div></div></div></div></div></div></div></div></div>";
                             $("#flights").append(one_wayhtml);
                         }
 
