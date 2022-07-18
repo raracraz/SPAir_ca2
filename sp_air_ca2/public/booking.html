@@ -37,7 +37,7 @@
                     success: function (data) {
                         // if user has token, get user info
                         $("#username").html(data.username);
-                        $("#nav-username").html('<img id="profile-pic"> ' + data.username);
+                        $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile.html">' + data.username + '</a>');
                         // alert(data.profile_pic_url)
                         var profile_pic_url = data.profile_pic_url;
                         // alert(pro)
@@ -50,20 +50,126 @@
                         $("#created_at").html('<div>Created account at: ' + data.created_at + '</div>');
                         // hide sign up and login buttons
                         $("#nav-right-btn").hide();
+                        $.ajax({
+                            url: "http://localhost:3000/api/shoppingcart/" + userid,
+                            type: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + token,
+                            },
+                            contentType: "application/json",
+                            success: function (data) {
+                                // if user has token, get user info
+                                $("#shoppingcart-count").html(data.length);
+                            },
+                            error: function (data) {
+                                $("#shoppingcart-count").html("0");
+                            }
+                        })
                     },
                     error: function (data) {
                         // if the token is invalid, redirect to login page
-                        window.location.href = "http://localhost:3000/index.html/";
+                        window.location.href = "http://localhost:3000/index.html";
                     }
                 });
             };
             var bookingageinputhtml = "";
-            for(var i = 0; i < 120; i++){
+            for (var i = 0; i < 120; i++) {
                 bookingageinputhtml += '<option value="' + i + '">' + i + '</option>';
             }
             $("#booking-age-input").append(bookingageinputhtml);
             var booking_btn_html = '<a class="row booking-btn"><p class="booking-btn-title">Add to cart</p></a>';
-            $("#booking-submit-btn").html(booking_btn_html);
+            $("#booking-submit-btn").html(booking_btn_html).click(function () {
+                var userid = localStorage.getItem('userid');
+                var token = localStorage.getItem('token');
+                var uri = window.location.search;
+                var param = new URLSearchParams(uri);
+                var flightid = param.get('flightid');
+                var seatType = param.get('seatType');
+                var firstname = $("#booking-firstname-input").val();
+                var lastname = $("#booking-lastname-input").val();
+                var passport = $("#booking-passport-input").val();
+                var nationality = $("#booking-nationality-input").val();
+                var age = $("#booking-age-input").val()
+                var fullname = firstname + " " + lastname
+                alert(age)
+                if (firstname == "") {
+                    $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> First name cannot be empty, please try again!</div>');
+                    $("#booking-firstname-label").addClass("omrs-input-danger");
+                    setTimeout(function () {
+                        $("#booking-firstname-label").removeClass("omrs-input-danger");
+                    }, 5000);
+                    setTimeout(function () {
+                        $("#shoppingcart-add-alert").html('');
+                    }, 5000);
+                } else if (lastname == "") {
+                    $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Last name cannot be empty, please try again!</div>');
+                    $("#booking-lastname-label").addClass("omrs-input-danger");
+                    setTimeout(function () {
+                        $("#booking-lastname-label").removeClass("omrs-input-danger");
+                    }, 5000);
+                    setTimeout(function () {
+                        $("#shoppingcart-add-alert").html('');
+                    }, 5000);
+                } else if (passport == "") {
+                    $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Passport cannot be empty, please try again!</div>');
+                    $("#booking-passport-label").addClass("omrs-input-danger");
+                    setTimeout(function () {
+                        $("#booking-passport-label").removeClass("omrs-input-danger");
+                    }, 5000);
+                    setTimeout(function () {
+                        $("#shoppingcart-add-alert").html('');
+                    }, 5000);
+                } else if (nationality == "") {
+                    $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Nationality cannot be empty, please try again!</div>');
+                    $("#booking-nationality-label").addClass("omrs-input-danger");
+                    setTimeout(function () {
+                        $("#booking-nationality-label").removeClass("omrs-input-danger");
+                    }, 5000);
+                    setTimeout(function () {
+                        $("#shoppingcart-add-alert").html('');
+                    }, 5000);
+                } else if (age == "") {
+                    $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert">  Age cannot be empty, please try again!</div>');
+                    $("#booking-nationality-label").addClass("omrs-input-danger");
+                    setTimeout(function () {
+                        $("#booking-nationality-label").removeClass("omrs-input-danger");
+                    }, 5000);
+                    setTimeout(function () {
+                        $("#shoppingcart-add-alert").html('');
+                    }, 5000);
+                }
+                var bodyData = JSON.stringify({
+                    "seatType": seatType,
+                    "name": fullname,
+                    "passport": passport,
+                    "nationality": nationality,
+                    "age": age
+                })
+                $.ajax({
+                    type: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    url: "http://localhost:3000/api/shoppingcart/" + userid + "/" + flightid,
+                    data: bodyData,
+                    contentType: "application/json",
+                    success: function (data) {
+                        $("#shoppingcart-add-alert").html('<div class="alert alert-success" role="alert"> Flight has been added to your shopping cart!</div>');
+                        setTimeout(function () {
+                            $("#shoppingcart-add-alert").html('');
+                            window.location.href = "http://localhost:3000/shoppingcart.html";
+                        }, 5000);
+                    },
+                    error: function (data) {
+                        $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Error adding flight to cart, please try again!</div>');
+                        setTimeout(function () {
+                            $("#shoppingcart-add-alert").html('');
+                        }, 5000);
+                    }
+                })
+            });
         });
     </script>
 </head>
@@ -73,7 +179,7 @@
         <div class="container-fluid navbar navbar-fixed-top">
             <div class="navbar-header">
                 <a class="navbar-brand" href="index.html">
-                    <img id="brand" alt="Brand" src="brand.png" height="30px" width="50px">
+                    <img id="brand" alt="Brand" src="images/brand.png" height="30px" width="50px">
                 </a>
             </div>
             <ul class="nav navbar-nav">
@@ -86,6 +192,8 @@
                 <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-loggedin">
+                <li id="nav-shoppingcart-item"><a href="shoppingcart.html"><span id="shoppingcart-count"></span><span
+                            class="glyphicon glyphicon-shopping-cart"></span> Shopping Cart</a></li>
                 <li id="nav-username-item"><span id="nav-username"></span></li>
                 <li id="nav-logout-btn"><a href="index.html"><span class="glyphicon glyphicon-log-in"></span><button
                             id="logout-btn" class="btn-link">Log Out</button></a></li>
@@ -97,7 +205,7 @@
         <div class="booking-main-title">
             <h2>Passenger Details</h2>
             <p>Each passenger must hold a valid passport (and visa(s), If required) to be allowed entry into each
-                destination on the flight itinerary. Singapore Airlines cannot be held responsible if a passenger is
+                destination on the flight itinerary. SP Air cannot be held responsible if a passenger is
                 denied
                 entry and/or deported by any local authority.</p>
         </div>
@@ -106,31 +214,31 @@
             <h4 class="title">Personal details</h4>
             <div class="booking-personal-details booking-input row">
                 <div class="omrs-input-group booking-firstname">
-                    <label class="omrs-input-underlined">
-                        <input required>
+                    <label class="omrs-input-underlined" id="booking-firstname-label">
+                        <input id="booking-firstname-input" required>
                         <span class="omrs-input-label">First name</span>
                     </label>
                 </div>
                 <div class="omrs-input-group booking-lastname">
-                    <label class="omrs-input-underlined ">
-                        <input required>
+                    <label class="omrs-input-underlined" id="booking-lastname-label">
+                        <input id="booking-lastname-input" required>
                         <span class="omrs-input-label">Last name</span>
                     </label>
                 </div>
                 <div class="omrs-input-group booking-passport">
-                    <label class="omrs-input-underlined ">
-                        <input required>
+                    <label class="omrs-input-underlined" id="booking-passport-label">
+                        <input id="booking-passport-input" required>
                         <span class="omrs-input-label">Passport number</span>
                     </label>
                 </div>
                 <div class="omrs-input-group booking-nationality">
-                    <label class="omrs-input-underlined ">
-                        <input required>
+                    <label class="omrs-input-underlined" id="booking-nationality-label">
+                        <input id="booking-nationality-input" required>
                         <span class="omrs-input-label">Nationality</span>
                     </label>
                 </div>
                 <div class="omrs-input-group booking-age">
-                    <label class="omrs-input-underlined ">
+                    <label class="omrs-input-underlined" id="booking-age-label">
                         <select class="form-control" id="booking-age-input">
                             <option value="">Age</option>
                         </select>
@@ -139,6 +247,7 @@
                 <span id="booking-submit-btn"></span>
             </div>
         </div>
+        <span id="shoppingcart-add-alert"></span>
     </div>
 
     <div class="footer-clean">

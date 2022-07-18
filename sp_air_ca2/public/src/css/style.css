@@ -436,8 +436,7 @@ body {
     background-color: #1e4bd1;
     text-align: center;
     width: 40%;
-    /* margin-left: 25%; */
-    margin-left: 70%;
+    margin-left: 25%;
 }
 .booking-btn{
     color: white;
@@ -704,7 +703,52 @@ div.omrs-input-group {
 }
 
 #nav-username-item {
-    margin-top: 7%;
+    margin-top: 4.5%;
+}
+
+#nav-shoppingcart-item {
+    margin-top: 1.5%;
+}
+
+#shoppingcart-count{
+    background-color: #c7c7c7;
+    /* make the background a circle */
+    border-radius: 50%;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.shoppingcart-box{
+    margin-top: 10%;
+    margin-bottom: 5%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 3px 3px 10px 0px rgb(116, 116, 116);
+    overflow: hidden;
+}
+
+.shoppingcart-box-title{
+    margin-top: 3%;
+    margin-left: 5%;
+}
+
+.shoppingcart-header-line-separator{
+    width: 80%;
+    margin-left: 10%;
+}
+
+.shoppingcart-item-box{
+    margin-top: 2%;
+    margin-left: 10%;
+    margin-bottom: 2%;
+    width: 80%;
+    box-shadow: #888888 0px 0px 2px;
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    grid-template-rows: 30px 30px 30px 30px;
 }
 
 .profile-panel {

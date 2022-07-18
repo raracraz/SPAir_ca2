@@ -40,7 +40,7 @@
                     success: function (data) {
                         // if user has token, get user info
                         $("#username").html(data.username);
-                        $("#nav-username").html('<img id="profile-pic"> ' + data.username);
+                        $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile.html">' + data.username + '</a>');
                         // alert(data.profile_pic_url)
                         var profile_pic_url = data.profile_pic_url;
                         // alert(pro)
@@ -53,11 +53,28 @@
                         $("#created_at").html('<div>Created account at: ' + data.created_at + '</div>');
                         // hide sign up and login buttons
                         $("#nav-right-btn").hide();
+                        $.ajax({
+                            url: "http://localhost:3000/api/shoppingcart/" + userid,
+                            type: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + token,
+                            },
+                            contentType: "application/json",
+                            success: function (data) {
+                                // if user has token, get user info
+                                $("#shoppingcart-count").html(data.length);
+                            },
+                            error: function (data) {
+                                $("#shoppingcart-count").html("0");
+                            }
+                        })
                     },
                     error: function (data) {
                         window.location.href = "http://localhost:3000/index.html";
                     }
                 });
+
             }
             var uri = window.location.search;
             var param = new URLSearchParams(uri);
@@ -101,13 +118,42 @@
                     var reachDate = new Date(embarkDate + " " + embarkTime);
                     var reachTime = new Date(reachDate.getTime() + totalTravelTimeMinutes * 60000);
                     $("#reachDate").html(reachDate.getFullYear() + "-" + (reachDate.getMonth() + 1) + "-" + reachDate.getDate() + " " + reachTime.getHours() + ":" + reachTime.getMinutes());
-                    var economy_btn_html = '<a class="row" id="flight-booking-economy-btn-s">Economy</a>';
+                    var economy_btn_html = '<a class="row" id="flight-booking-economy-btn-s">Economy $' + price + '</a>';
                     // alert(economy_btn_html);
-                    var business_btn_html = '<a class="row" id="flight-booking-business-btn-s">Business</a>';
+                    var business_btn_html = '<a class="row" id="flight-booking-business-btn-s">Business $' + price + '</a>';
                     $("#flight-booking-economy-btn").html(economy_btn_html).click(
                         function () {
                             if (token) {
-                                window.location.href = "booking.html?flightid=" + flightid + "&seatType=economy";
+                                // window.location.href = "booking.html?flightid=" + flightid + "&seatType=economy";
+                                var bodyData = JSON.stringify({
+                                    "seatType": "economy",
+                                });
+                                $.ajax({
+                                    url: "http://localhost:3000/api/shoppingcart/" + userid + "/" + flightid,
+                                    type: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "Authorization": "Bearer " + token,
+                                    },
+                                    contentType: "application/json",
+                                    data: bodyData,
+                                    success: function (data) {
+                                        // show a pop alert that asks user if they want to add to shopping cart using jquery dialog
+                                        $("#flight-booking-result-msg").html("<div class='alert alert-success' role='alert'>Added to shopping cart</div>");
+                                        setTimeout(function () {
+                                            $("#flight-booking-result-msg").html("");
+                                        }, 5000);
+                                        // reload page 
+                                        window.location.reload();
+                                    },
+                                    error: function (data) {
+                                        $("#flight-booking-result-msg").html("<div class='alert alert-danger' role='alert'>Error adding to shopping cart</div>");
+                                        setTimeout(function () {
+                                            $("#flight-booking-result-msg").html("");
+                                        }, 5000);
+                                        window.location.reload();
+                                    }
+                                });
                             } else {
                                 window.location.href = "http://localhost:3000/login.html";
                             }
@@ -116,7 +162,35 @@
                     $("#flight-booking-business-btn").html(business_btn_html).click(
                         function () {
                             if (token) {
-                                window.location.href = "booking.html?flightid=" + flightid + "&seatType=business";
+                                // window.location.href = "booking.html?flightid=" + flightid + "&seatType=business";
+                                var bodyData = JSON.stringify({
+                                    "seatType": "business",
+                                });
+                                $.ajax({
+                                    url: "http://localhost:3000/api/shoppingcart/" + userid + "/" + flightid,
+                                    type: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "Authorization": "Bearer " + token,
+                                    },
+                                    contentType: "application/json",
+                                    data: bodyData,
+                                    success: function (data) {
+                                        // show a pop alert that asks user if they want to add to shopping cart using jquery dialog
+                                        $("#flight-booking-result-msg").html("<div class='alert alert-success' role='alert'>Added to shopping cart</div>");
+                                        setTimeout(function () {
+                                            $("#flight-booking-result-msg").html("");
+                                        }, 5000);
+                                        window.location.reload();
+                                    },
+                                    error: function (data) {
+                                        $("#flight-booking-result-msg").html("<div class='alert alert-danger' role='alert'>Error adding to shopping cart</div>");
+                                        setTimeout(function () {
+                                            $("#flight-booking-result-msg").html("");
+                                        }, 5000);
+                                        window.location.reload();
+                                    }
+                                });
                             } else {
                                 window.location.href = "http://localhost:3000/login.html";
                             }
@@ -142,7 +216,7 @@
         <div class="container-fluid navbar navbar-fixed-top">
             <div class="navbar-header">
                 <a class="navbar-brand" href="index.html">
-                    <img id="brand" alt="Brand" src="brand.png" height="30px" width="50px">
+                    <img id="brand" alt="Brand" src="images/brand.png" height="30px" width="50px">
                 </a>
             </div>
             <ul class="nav navbar-nav">
@@ -155,6 +229,8 @@
                 <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-loggedin">
+                <li id="nav-shoppingcart-item"><a href="shoppingcart.html"><span id="shoppingcart-count"></span><span
+                            class="glyphicon glyphicon-shopping-cart"></span> Shopping Cart</a></li>
                 <li id="nav-username-item"><span id="nav-username"></span></li>
                 <li id="nav-logout-btn"><a href="index.html"><span class="glyphicon glyphicon-log-in"></span><button
                             id="logout-btn" class="btn-link">Log Out</button></a></li>
@@ -223,10 +299,14 @@
                         <span class="flight-detail-book-business" id="flight-booking-business-btn"></span>
                         <!-- <a href="booking.html" class='row flight-detail-book-business'>Business</a> -->
                     </div>
+
                     <div id="flight-detail-line-bottom">
                         <hr class="line-black">
                     </div>
+                    <span id="flight-booking-result-msg"></span>
                 </div>
+
+
                 <hr>
             </div>
         </div>

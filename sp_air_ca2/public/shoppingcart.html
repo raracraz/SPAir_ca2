@@ -8,6 +8,7 @@
     <title>Homepage</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
@@ -25,7 +26,6 @@
                 $("#nav-right-loggedin").hide()
             } else {
                 // user logged in
-
                 $.ajax({
                     url: "http://localhost:3000/api/user/" + userid,
                     type: "GET",
@@ -61,6 +61,30 @@
                             success: function (data) {
                                 // if user has token, get user info
                                 $("#shoppingcart-count").html(data.length);
+                                for (var i = 0; i < data.length; i++) {
+                                    var item = data[i];
+                                    // alert(JSON.stringify(item));
+                                    // return msg
+                                    // {"userid":1,"flightItemid":2,"seatType":"economy","OriginAirport":"Bangkok International Airport","DestinationAirport":"Kuala Lumpur Airport","embarkDate":"2022-12-26","travelTime":"6:50","price":"508"}
+                                    var seatType = item.seatType;
+                                    var OriginAirport = item.OriginAirport;
+                                    var OriginCountry = item.OriginCountry;
+                                    var DestinationAirport = item.DestinationAirport;
+                                    var DestinationCountry = item.DestinationCountry;
+                                    var flightCode = item.flightCode;
+                                    var embarkDate = item.embarkDate;
+                                    var embarkTime = item.embarkTime;
+                                    var travelTime = item.travelTime;
+                                    var travelTimeHM = travelTime.split(":")[0] + " Hours " + travelTime.split(":")[1] + " Minutes";
+                                    var price = item.price;
+                                    var totalTravelTimeMinutes = parseInt(travelTime.split(":")[1]) + (parseInt(travelTime.split(":")[0]) * 60);
+                                    // add travel time to embark date to get reach date and time
+                                    var reachDate = new Date(embarkDate + " " + embarkTime);
+                                    var reachTime = new Date(reachDate.getTime() + totalTravelTimeMinutes * 60000);
+                                    var reachDateandTime = reachDate.getFullYear() + "-" + (reachDate.getMonth() + 1) + "-" + reachDate.getDate() + " " + reachTime.getHours() + ":" + reachTime.getMinutes();
+                                    var returnhtml = '<div class="shoppingcart-item-box"><div class="shoppingcart-OriginCountry">' + OriginCountry + '</div><div class="shoppingcart-DestinationCountry">' + DestinationCountry + '</div><div class="shoppingcart-OriginAirport">' + OriginAirport + '</div><div class="shoppingcart-DestinationAirport">' + DestinationAirport + '</div><div class="flight-detail-to-box"><span class="iconify" data-icon="ion:airplane" id="flight-detail-plane-icon"></span></div><div class="shoppingcart-embarkDate">' + embarkDate +' '+ embarkTime + '</div><div class="shoppingcart-travelTime">'+travelTimeHM+'</div><div class="shoppingcart-reachDate">'+reachDateandTime+'</div><div class="shoppingcart-flightCode">'+flightCode+'</div><div class="shoppingcart-price">$ '+price+'</div></div>';
+                                    $("#shoppingcart-items").append(returnhtml);
+                                }
                             },
                             error: function (data) {
                                 $("#shoppingcart-count").html("0");
@@ -72,76 +96,6 @@
                     }
                 });
             }
-            var uri = window.location.search;
-            var param = new URLSearchParams(uri);
-            var originAirport = parseInt(param.get('origin'));
-            var destinationAirport = parseInt(param.get('destination'));
-            var departDate = param.get('departureDate');
-            var returnDate = param.get('returnDate');
-            var type = param.get('trip-type');
-            // alert(originAirport + " " + destinationAirport + " " + departDate + " " + returnDate + " " + type);
-            // alert("http://localhost:3000/api/flights/" + originAirport + "/" + destinationAirport + "/" + departDate + "/" + returnDate + "/" + type,);
-            $.ajax({
-                url: "http://localhost:3000/api/flights/" + originAirport + "/" + destinationAirport + "/" + departDate + "/" + returnDate + "/" + type,
-                type: "GET",
-                contentType: "application/json",
-                success: function (data) {
-                    // if user has token, get user info
-                    // alert(JSON.stringify(data));
-                    // alert(JSON.stringify(data));
-                    var html = "";
-                    // parse the data and display the result 
-                    var one_wayJSON = data.one_way;
-                    var returnJSON = data.return;
-                    if (one_wayJSON == undefined) {
-                        one_wayJSON = [];
-                    }
-                    if (returnJSON == undefined) {
-                        returnJSON = [];
-                    }
-                    // alert(JSON.stringify(one_wayJSON));
-                    // alert(JSON.stringify(returnJSON))
-                    $("#flightOriginToDestination").html("<h2 class='card-title'>Flight Listings:</h2>");
-                    // if there is no flights found, display message
-                    if (one_wayJSON.length == 0 && returnJSON.length == 0) {
-                        $("#flightOriginToDestination").append("<div class='flight-listing-notfound'><h3 class='flight-listing-notfound' id='flight-listing-title'>No flights found</h3></div>");
-                    } else {
-                        for (var i = 0; i < one_wayJSON.length; i++) {
-                            var count = i + 1;
-                            var flight_id = one_wayJSON[i].flightid;
-                            var flightCode = one_wayJSON[i].flightCode;
-                            var aircraft = one_wayJSON[i].aircraft;
-                            var embarkDate = one_wayJSON[i].embarkDate;
-                            var embarkTime = one_wayJSON[i].embarkTime;
-                            var travelTime = one_wayJSON[i].travelTime;
-                            var origin_airport = one_wayJSON[i].originAirport;
-                            var destination_airport = one_wayJSON[i].destinationAirport;
-                            var price = one_wayJSON[i].price;
-                            var one_wayhtml = "<div id='flight-listing'><div class='row card-listing'><div class='col-md-12'><div class='card'><div class='card-body'><div class='row'><div class='col-md-12 card-listing-info'><div class='row'><div class='col-md-12'><h4 class='card-title'>" + count + ". " + origin_airport + " to " + destination_airport + "</h4></div></div><div class='row flight-listing-depart'><div class='col-md-12'><p class='card-text'> Departure Date: " + embarkDate + " " + embarkTime + "</p></div></div><div class='row flight-listing-price'><div class='col-md-12'><p class='card-text'>Price: $" + price + "</p></div></div><div class='row flight-listing-status'><div class='col-md-12'><p id='flight-listing-status-title'>Economy</p></div></div><div class='row flight-listing-btn'><div class='col-md-12'><a href='http://localhost:3000/flightDetails.html?flightid=" + flight_id + "&type=" + type + "' class='btn btn-primary'>Book Flight</a></div></div></div></div></div></div></div></div></div></div></div>";
-                            $("#flights").append(one_wayhtml);
-                        }
-
-                        for (var j = 0; j < returnJSON.length; j++) {
-                            var count = i + 1;
-                            var flight_id = returnJSON[j].flightid;
-                            var flightCode = returnJSON[j].flightCode;
-                            var aircraft = returnJSON[j].aircraft;
-                            var embarkDate = returnJSON[j].embarkDate;
-                            var embarkTime = returnJSON[j].embarkTime;
-                            var travelTime = returnJSON[j].travelTime;
-                            var origin_airport = returnJSON[j].originAirport;
-                            var destination_airport = returnJSON[j].destinationAirport;
-                            var price = returnJSON[j].price;
-                            var returnhtml = "<div id='flight-listing'><div class='row card-listing'><div class='col-md-12'><div class='card'><div class='card-body'><div class='row'><div class='col-md-12 card-listing-info'><div class='row'><div class='col-md-12'><h4 class='card-title'>" + count + ". " + origin_airport + " to " + destination_airport + "</h4></div></div><div class='row flight-listing-depart'><div class='col-md-12'><p class='card-text'> Departure Date: " + embarkDate + " " + embarkTime + "</p></div></div><div class='row flight-listing-price'><div class='col-md-12'><p class='card-text'>Price: $" + price + "</p></div></div><div class='row flight-listing-status'><div class='col-md-12'><p id='flight-listing-status-title'>Economy</p></div></div><div class='row flight-listing-btn'><div class='col-md-12'><a href='http://localhost:3000/flightDetails.html?flightid=" + flight_id + "' class='btn btn-primary'>Book Flight</a></div></div></div></div></div></div></div></div></div></div></div>";
-                            $("#flights").append(returnhtml);
-
-                        }
-                    }
-                },
-                error: function (data) {
-                    alert("error");
-                }
-            });
             $("#logout-btn").click(() => {
                 localStorage.removeItem("token");
                 localStorage.removeItem("userid");
@@ -165,6 +119,7 @@
                 <li><a href="#">Contact</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-btn">
+                <!-- add a cart option -->
                 <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
                 <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
             </ul>
@@ -177,9 +132,21 @@
             </ul>
         </div>
     </nav>
-    <div class="container-fluid flight-listing-panel">
-        <span id="flightOriginToDestination"></span>
-        <span id="flights"></span>
+    <div class="container-fluid shoppingcart-panel">
+        <div class="shoppingcart-box">
+            <div class="shoppingcart-header">
+                <h2 class="shoppingcart-box-title">Shopping Cart</h2>
+            </div>
+            <div class="shoppingcart-header-line-separator">
+                <hr class="line-black">
+            </div>
+            <span id="shoppingcart-items"></span>
+            <div class="shoppingcart-header-line-separator">
+                <hr class="line-black">
+            </div>
+            <h4 class="shoppingcart-total-title">Total:</h4>
+            <span id="total-price"></span>
+        </div>
     </div>
     <div class="footer-clean">
         <footer>

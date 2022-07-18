@@ -1,0 +1,49 @@
+const dbconnect = require('./databaseConfig');
+
+const Shoppingcart = {
+    insert: function (userid, flightid, seatType, callback) {
+        var conn = dbconnect.getConnection();
+        conn.connect(
+            function (err) {
+                if (err) {
+                    return callback(err, null)
+                } else {
+                    var query = "INSERT into shoppingcart (userid, flightItemid, seatType) values(?, ?, ?)"
+                    conn.query(query, [userid, flightid, seatType], (err, result) => {
+                        conn.end()
+                        if (err) {
+                            return callback(err, null)
+                        } else {
+                            var shoppingcartid = (result.insertId).toString()
+                            return callback(null, shoppingcartid)
+                        }
+                    }
+                    )
+                }
+            })
+    },
+    getAllbyId: function (userid, callback) {
+        var conn = dbconnect.getConnection();
+        conn.connect(
+            function (err) {
+                if (err) {
+                    return callback(err, null)
+                } else {
+                    var query = "SELECT s.cartid, s.userid, s.flightItemid, s.seatType, a.airport_name as OriginAirport, a.airport_country as OriginCountry, a2.airport_name as DestinationAirport, a2.airport_country as DestinationCountry, f.flightCode, f.embarkDate, f.embarkTime, f.travelTime, f.price from shoppingcart s join flights f on s.flightItemid = f.flightid join airports a on f.originAirport = a.airportid join airports a2 on f.destinationAirport = a2.airportid where userid = ?"
+                    conn.query(query, [userid], (err, result) => {
+                        conn.end()
+                        if (err) {
+                            return callback(err, null)
+                        } else {
+                            return callback(null, result)
+                        }
+                    }
+                    )
+                }
+            }
+        )
+    }
+
+}
+
+module.exports = Shoppingcart;

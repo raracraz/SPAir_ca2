@@ -36,7 +36,7 @@
                     success: function (data) {
                         // if user has token, get user info
                         $("#username").html(data.username);
-                        $("#nav-username").html('<img id="profile-pic"> ' + data.username);
+                        $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile.html">' + data.username + '</a>');
                         // alert(data.profile_pic_url)
                         var profile_pic_url = data.profile_pic_url;
                         // alert(pro)
@@ -49,10 +49,26 @@
                         $("#created_at").html('<div>Created account at: ' + data.created_at + '</div>');
                         // hide sign up and login buttons
                         $("#nav-right-btn").hide();
+                        $.ajax({
+                            url: "http://localhost:3000/api/shoppingcart/" + userid,
+                            type: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + token,
+                            },
+                            contentType: "application/json",
+                            success: function (data) {
+                                // if user has token, get user info
+                                $("#shoppingcart-count").html(data.length);
+                            },
+                            error: function (data) {
+                                $("#shoppingcart-count").html("0");
+                            }
+                        })
                     },
                     error: function (data) {
                         // if the token is invalid, redirect to login page
-                        window.location.href = "http://localhost:3000/index.html/";
+                        window.location.href = "http://localhost:3000/index.html";
                     }
                 });
             };
@@ -90,22 +106,22 @@
                 localStorage.removeItem("userid");
                 window.location.href = "http://localhost:3000/index.html";
             });
-            
+
             $("#form-submit-btn").click(() => {
                 // get the value from the input
                 var originAirport = $("#origin").val();
                 var destinationAirport = $("#destination").val();
                 var departureDate = $("#depart-date").val();
-                var returnDate = $("#return-date").val();   
+                var returnDate = $("#return-date").val();
                 // replace the - with /
                 // get the value of type from the radio
                 // alert(originAirport + " " + destinationAirport + " " + departureDate + " " + returnDate);
                 var type = $('input[name=trip-type]:checked').val();
-                if(!originAirport || !destinationAirport || !departureDate || !returnDate){
+                if (!originAirport || !destinationAirport || !departureDate || !returnDate) {
                     $("#form-error").html('<div class="alert alert-danger"><strong>Please fill in all fields</strong></div>');
                     // $("#form-error").show();
                     setTimeout(() => $("#form-error").html(''), 5000);
-                } else if (originAirport == destinationAirport){
+                } else if (originAirport == destinationAirport) {
                     $("#form-error").html('<div class="alert alert-danger"><strong>Origin Airport cannot be the same as Destination Airport</strong></div>');
                     // $("#form-error").show();
                     setTimeout(() => $("#form-error").html(''), 5000);
@@ -113,7 +129,14 @@
                     // redirect to the search page
                     window.location.href = "http://localhost:3000/searchResult.html?origin=" + originAirport + "&destination=" + destinationAirport + "&departureDate=" + departureDate + "&returnDate=" + returnDate + "&trip-type=" + type;
                 }
-            })
+            });
+            $("input[name=trip-type]").change(function () {
+                if ($(this).val() == "return") {
+                    $("#return-date").prop("disabled", false);
+                } else {
+                    $("#return-date").prop("disabled", true);
+                }
+            });
         });
     </script>
 </head>
@@ -123,7 +146,7 @@
         <div class="container-fluid navbar navbar-fixed-top">
             <div class="navbar-header">
                 <a class="navbar-brand" href="index.html">
-                    <img id="brand" alt="Brand" src="brand.png" height="30px" width="50px">
+                    <img id="brand" alt="Brand" src="images/brand.png" height="30px" width="50px">
                 </a>
             </div>
             <ul class="nav navbar-nav">
@@ -136,6 +159,8 @@
                 <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-loggedin">
+                <li id="nav-shoppingcart-item"><a href="shoppingcart.html"><span id="shoppingcart-count"></span><span
+                            class="glyphicon glyphicon-shopping-cart"></span> Shopping Cart</a></li>
                 <li id="nav-username-item"><span id="nav-username"></span></li>
                 <li id="nav-logout-btn"><a href="index.html"><span class="glyphicon glyphicon-log-in"></span><button
                             id="logout-btn" class="btn-link">Log Out</button></a></li>
@@ -172,8 +197,7 @@
                 <!-- radio for user to select if they want one way trip or return flights -->
                 <div class="form-check-input">
                     <label class="form-check-label">
-                        <input type="radio" class="form-radio" name="trip-type" id="one-way" value="one_way"
-                            checked>
+                        <input type="radio" class="form-radio" name="trip-type" id="one-way" value="one_way" checked>
                         One Way
                         <input type="radio" class="form-radio" name="trip-type" id="return" value="return">
                         Return trip

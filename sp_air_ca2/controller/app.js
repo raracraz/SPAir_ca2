@@ -45,6 +45,7 @@ const User = require('../models/user');
 const Airport = require('../models/airport');
 const Flight = require('../models/flight');
 const Booking = require('../models/booking');
+const Shoppingcart = require('../models/shoppingcart');
 // const Transfer = require('../-Oldmodels/transfer');
 // const flightImage = require('../-Oldmodels/flightImage');
 // const Promotion = require('../-Oldmodels/promotion');
@@ -365,6 +366,57 @@ app.get('/api/flights/:flightid', (req, res, next) => {
                     res.status(200).send(result);
                 } else {
                     res.status(404).send({ "message": "No flights found" });
+                }
+            }
+        });
+    } catch(e){
+        res.status(500).send(defaultErrMsg)
+    }
+})
+
+app.post('/api/shoppingcart/:userid/:flightid', verifyToken, (req, res, next) => {
+    var flightid = parseInt(req.params.flightid);
+    var userid = parseInt(req.params.userid);
+    var seatType = req.body.seatType;
+    // var name = req.body.name;
+    // var passport = req.body.passport;
+    // var nationality = req.body.nationality;
+    // var age = req.body.age;
+    try{
+        Shoppingcart.insert(userid, flightid, seatType, (err, shoppingcartid) => {
+            if (err) {
+                if (err.errno == 1048){
+                    console.log(err)
+                    res.status(400).send({"message": "Values cannot be empty"})
+                } else {
+                    console.log(err)
+                    res.status(500).send(defaultErrMsg);
+                }
+            } else {
+                var successmsg = {
+                    "shoppingcartid": shoppingcartid
+                };
+                res.status(201).send(successmsg);
+            }
+        });
+    } catch(e){
+        console.log(e)
+        res.status(500).send(defaultErrMsg)
+    }
+})
+
+app.get('/api/shoppingcart/:userid', verifyToken, (req, res, next) => {
+    var userid = parseInt(req.params.userid);
+    try{
+        Shoppingcart.getAllbyId(userid, (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send(defaultErrMsg);
+            } else {
+                if (result) {
+                    res.status(200).send(result);
+                } else {
+                    res.status(404).send({ "message": "No shoppingcart found" });
                 }
             }
         });
