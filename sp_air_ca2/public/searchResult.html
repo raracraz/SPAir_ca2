@@ -79,8 +79,12 @@
             var departDate = param.get('departureDate');
             var returnDate = param.get('returnDate');
             var type = param.get('trip-type');
+
             // alert(originAirport + " " + destinationAirport + " " + departDate + " " + returnDate + " " + type);
             // alert("http://localhost:3000/api/flights/" + originAirport + "/" + destinationAirport + "/" + departDate + "/" + returnDate + "/" + type,);
+            if(returnDate == ""){
+                returnDate = "0000-00-00";
+            }
             $.ajax({
                 url: "http://localhost:3000/api/flights/" + originAirport + "/" + destinationAirport + "/" + departDate + "/" + returnDate + "/" + type,
                 type: "GET",

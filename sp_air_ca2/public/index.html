@@ -117,7 +117,7 @@
                 // get the value of type from the radio
                 // alert(originAirport + " " + destinationAirport + " " + departureDate + " " + returnDate);
                 var type = $('input[name=trip-type]:checked').val();
-                if (!originAirport || !destinationAirport || !departureDate || !returnDate) {
+                if (!originAirport || !destinationAirport || !departureDate) {
                     $("#form-error").html('<div class="alert alert-danger"><strong>Please fill in all fields</strong></div>');
                     // $("#form-error").show();
                     setTimeout(() => $("#form-error").html(''), 5000);
@@ -130,11 +130,20 @@
                     window.location.href = "http://localhost:3000/searchResult.html?origin=" + originAirport + "&destination=" + destinationAirport + "&departureDate=" + departureDate + "&returnDate=" + returnDate + "&trip-type=" + type;
                 }
             });
+            $("#return-date").prop("disabled", true);
+            $("#return-date").css("background-color", "lightgray");
+            $("#return-date").attr("type", "text");
+            $("#return-date").val("");
             $("input[name=trip-type]").change(function () {
-                if ($(this).val() == "return") {
-                    $("#return-date").prop("disabled", false);
-                } else {
+                if ($(this).val() == "one_way") {
                     $("#return-date").prop("disabled", true);
+                    $("#return-date").css("background-color", "lightgray");
+                    $("#return-date").attr("type", "text");
+                    $("#return-date").val("");
+                } else {
+                    $("#return-date").prop("type", "date");
+                    $("#return-date").css("background-color", "white");
+                    $("#return-date").prop("disabled", false);
                 }
             });
         });

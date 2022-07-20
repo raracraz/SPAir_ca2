@@ -42,6 +42,27 @@ const Shoppingcart = {
                 }
             }
         )
+    },
+    removeById: function (cartid, callback) {
+        var conn = dbconnect.getConnection();
+        conn.connect(
+            function (err) {
+                if (err) {
+                    return callback(err, null)
+                } else {
+                    var query = "DELETE from shoppingcart where cartid = ?"
+                    conn.query(query, [cartid], (err, result) => {
+                        conn.end()
+                        if (err) {
+                            return callback(err, null)
+                        } else {
+                            return callback(null, result)
+                        }
+                    }
+                    )
+                }
+            }
+        )
     }
 
 }

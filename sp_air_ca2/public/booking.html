@@ -82,93 +82,116 @@
             $("#booking-submit-btn").html(booking_btn_html).click(function () {
                 var userid = localStorage.getItem('userid');
                 var token = localStorage.getItem('token');
-                var uri = window.location.search;
-                var param = new URLSearchParams(uri);
-                var flightid = param.get('flightid');
-                var seatType = param.get('seatType');
-                var firstname = $("#booking-firstname-input").val();
-                var lastname = $("#booking-lastname-input").val();
-                var passport = $("#booking-passport-input").val();
-                var nationality = $("#booking-nationality-input").val();
-                var age = $("#booking-age-input").val()
-                var fullname = firstname + " " + lastname
-                alert(age)
-                if (firstname == "") {
-                    $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> First name cannot be empty, please try again!</div>');
-                    $("#booking-firstname-label").addClass("omrs-input-danger");
-                    setTimeout(function () {
-                        $("#booking-firstname-label").removeClass("omrs-input-danger");
-                    }, 5000);
-                    setTimeout(function () {
-                        $("#shoppingcart-add-alert").html('');
-                    }, 5000);
-                } else if (lastname == "") {
-                    $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Last name cannot be empty, please try again!</div>');
-                    $("#booking-lastname-label").addClass("omrs-input-danger");
-                    setTimeout(function () {
-                        $("#booking-lastname-label").removeClass("omrs-input-danger");
-                    }, 5000);
-                    setTimeout(function () {
-                        $("#shoppingcart-add-alert").html('');
-                    }, 5000);
-                } else if (passport == "") {
-                    $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Passport cannot be empty, please try again!</div>');
-                    $("#booking-passport-label").addClass("omrs-input-danger");
-                    setTimeout(function () {
-                        $("#booking-passport-label").removeClass("omrs-input-danger");
-                    }, 5000);
-                    setTimeout(function () {
-                        $("#shoppingcart-add-alert").html('');
-                    }, 5000);
-                } else if (nationality == "") {
-                    $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Nationality cannot be empty, please try again!</div>');
-                    $("#booking-nationality-label").addClass("omrs-input-danger");
-                    setTimeout(function () {
-                        $("#booking-nationality-label").removeClass("omrs-input-danger");
-                    }, 5000);
-                    setTimeout(function () {
-                        $("#shoppingcart-add-alert").html('');
-                    }, 5000);
-                } else if (age == "") {
-                    $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert">  Age cannot be empty, please try again!</div>');
-                    $("#booking-nationality-label").addClass("omrs-input-danger");
-                    setTimeout(function () {
-                        $("#booking-nationality-label").removeClass("omrs-input-danger");
-                    }, 5000);
-                    setTimeout(function () {
-                        $("#shoppingcart-add-alert").html('');
-                    }, 5000);
-                }
-                var bodyData = JSON.stringify({
-                    "seatType": seatType,
-                    "name": fullname,
-                    "passport": passport,
-                    "nationality": nationality,
-                    "age": age
-                })
-                $.ajax({
-                    type: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    },
-                    url: "http://localhost:3000/api/shoppingcart/" + userid + "/" + flightid,
-                    data: bodyData,
-                    contentType: "application/json",
-                    success: function (data) {
-                        $("#shoppingcart-add-alert").html('<div class="alert alert-success" role="alert"> Flight has been added to your shopping cart!</div>');
+                // var uri = window.location.search;
+                // var param = new URLSearchParams(uri);
+                // var flightid = param.get('flightid');
+                // var seatType = param.get('seatType');
+                // get the seat type and flight id from local storage
+                var shoppingcart = localStorage.getItem('shoppingcart');
+                var shoppingcart = JSON.parse(shoppingcart);
+                for (var i = 0; i < shoppingcart.length; i++) {
+                    var item = shoppingcart[i];
+                    // alert(item);
+                    var cartid = item.cartid;
+                    var userid = item.userid;
+                    var flightid = item.flightItemid;
+                    var seatType = item.seatType;
+                    var firstname = $("#booking-firstname-input").val();
+                    var lastname = $("#booking-lastname-input").val();
+                    var passport = $("#booking-passport-input").val();
+                    var nationality = $("#booking-nationality-input").val();
+                    var age = $("#booking-age-input").val()
+                    var fullname = firstname + " " + lastname
+                    // alert(age)
+                    if (firstname == "") {
+                        $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> First name cannot be empty, please try again!</div>');
+                        $("#booking-firstname-label").addClass("omrs-input-danger");
+                        setTimeout(function () {
+                            $("#booking-firstname-label").removeClass("omrs-input-danger");
+                        }, 5000);
                         setTimeout(function () {
                             $("#shoppingcart-add-alert").html('');
-                            window.location.href = "http://localhost:3000/shoppingcart.html";
                         }, 5000);
-                    },
-                    error: function (data) {
-                        $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Error adding flight to cart, please try again!</div>');
+                    } else if (lastname == "") {
+                        $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Last name cannot be empty, please try again!</div>');
+                        $("#booking-lastname-label").addClass("omrs-input-danger");
+                        setTimeout(function () {
+                            $("#booking-lastname-label").removeClass("omrs-input-danger");
+                        }, 5000);
+                        setTimeout(function () {
+                            $("#shoppingcart-add-alert").html('');
+                        }, 5000);
+                    } else if (passport == "") {
+                        $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Passport cannot be empty, please try again!</div>');
+                        $("#booking-passport-label").addClass("omrs-input-danger");
+                        setTimeout(function () {
+                            $("#booking-passport-label").removeClass("omrs-input-danger");
+                        }, 5000);
+                        setTimeout(function () {
+                            $("#shoppingcart-add-alert").html('');
+                        }, 5000);
+                    } else if (nationality == "") {
+                        $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Nationality cannot be empty, please try again!</div>');
+                        $("#booking-nationality-label").addClass("omrs-input-danger");
+                        setTimeout(function () {
+                            $("#booking-nationality-label").removeClass("omrs-input-danger");
+                        }, 5000);
+                        setTimeout(function () {
+                            $("#shoppingcart-add-alert").html('');
+                        }, 5000);
+                    } else if (age == "") {
+                        alert(age)
+                        $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert">  Age cannot be empty, please try again!</div>');
+                        $("#booking-nationality-label").addClass("omrs-input-danger");
+                        setTimeout(function () {
+                            $("#booking-nationality-label").removeClass("omrs-input-danger");
+                        }, 5000);
                         setTimeout(function () {
                             $("#shoppingcart-add-alert").html('');
                         }, 5000);
                     }
-                })
+                    var bodyData = JSON.stringify({
+                        "seatType": seatType,
+                        "name": fullname,
+                        "passport": passport,
+                        "nationality": nationality,
+                        "age": age
+                    })
+                    $.ajax({
+                        type: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        url: "http://localhost:3000/api/booking/" + userid + "/" + flightid,
+                        data: bodyData,
+                        contentType: "application/json",
+                        success: function (data) {
+                            $("#shoppingcart-add-alert").html('<div class="alert alert-success" role="alert"> Flight successfully booked</div>');
+                            setTimeout(function () {
+                                $("#shoppingcart-add-alert").html('');
+                            }, 5000);
+                        },
+                        error: function (data) {
+                            $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Error adding flight booking, please try again!</div>');
+                            setTimeout(function () {
+                                $("#shoppingcart-add-alert").html('');
+                            }, 5000);
+                        }
+                    })
+                    $.ajax({
+                        type: "DELETE",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        url: "http://localhost:3000/api/shoppingcart/del/" + cartid,
+                        contentType: "application/json",
+                        success(data){
+                            localStorage.removeItem('shoppingcart');
+                        }
+                    })
+                }
             });
         });
     </script>
@@ -207,7 +230,8 @@
             <p>Each passenger must hold a valid passport (and visa(s), If required) to be allowed entry into each
                 destination on the flight itinerary. SP Air cannot be held responsible if a passenger is
                 denied
-                entry and/or deported by any local authority.</p>
+                entry and/or deported by any local authority.
+            </p>
         </div>
         <hr class="line-black">
         <div class="container booking-options-body">

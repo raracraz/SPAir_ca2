@@ -99,10 +99,11 @@ app.post('/api/login', (req, res) => {
             } else {
                 if (result) {
                     const payload = { userid: result.userid, email: result.email, role: result.role };
-                    jwt.sign(payload, JWT_SECRET, { algorithm: "HS256"  }, (err, token) => {
+                    jwt.sign(payload, JWT_SECRET, { algorithm: "HS256" }, (err, token) => {
                         if (err) {
                             res.status(500).send(defaultErrMsg);
                         } else {
+                            // console.log(token)
                             var successmsg = {
                                 "userid": result.userid,
                                 "email": result.email,
@@ -423,6 +424,64 @@ app.get('/api/shoppingcart/:userid', verifyToken, (req, res, next) => {
     } catch(e){
         res.status(500).send(defaultErrMsg)
     }
+})
+
+app.delete('/api/shoppingcart/del/:shoppingcartid', verifyToken, (req, res, next) => {
+    var shoppingcartid = parseInt(req.params.shoppingcartid);
+    try{
+        Shoppingcart.removeById(shoppingcartid, (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send(defaultErrMsg);
+            } else {
+                if (result) {
+                    res.status(200).send(result);
+                } else {
+                    res.status(404).send({ "message": "No shoppingcart found" });
+                }
+            }
+        });
+    } catch(e){
+        res.status(500).send(defaultErrMsg)
+    }
+})
+
+app.post('/api/booking/:userid/:flightid', verifyToken, (req, res, next) => {
+    var flightid = parseInt(req.params.flightid);
+    var userid = parseInt(req.params.userid);
+    var seatType = req.body.seatType;
+    var name = req.body.name;
+    var passport = req.body.passport;
+    var nationality = req.body.nationality;
+    var age = parseInt(req.body.age);
+    Booking.insert(flightid, userid, name, passport, nationality, seatType, age, (err, bookingid) => {
+        if(err){
+            console.log(err)
+            res.status(500).send(defaultErrMsg)
+        } else {
+            if(bookingid){
+                res.status(200).send(bookingid)
+            } else {
+                res.status(404).send({ "message": "Error in bookings, please try again!" })
+            }
+        }
+    })
+})
+
+app.get('/api/getbooking/:userid', verifyToken, (req, res, next) => {
+    var userid = parseInt(req.params.userid);
+    Booking.getAllbyId(userid, (err, result) => {
+        if(err){
+            console.log(err)
+            res.status(500).send(defaultErrMsg)
+        } else {
+            if(result){
+                res.status(200).send(result)
+            } else {
+                res.status(404).send({ "message": "No bookings found" })
+            }
+        }
+    })
 })
 
 module.exports = app;

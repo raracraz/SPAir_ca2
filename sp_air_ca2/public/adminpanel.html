@@ -28,6 +28,7 @@
                 // alert(token)
                 // if user has token, get user info
                 // alert(userid + " " + token);
+                
                 $.ajax({
                     url: "http://localhost:3000/api/user/" + userid,
                     type: "GET",
@@ -38,11 +39,7 @@
                     contentType: "application/json",
                     success: function (data) {
                         // if user has token, get user info
-                        // alert(JSON.stringify(data.role));
-                        if (data.role == "admin") {
-                            // if user is admin, show admin panel
-                            $("#admin-panel").html('<a href="adminpanel.html">Admin panel</a>');
-                        } 
+                        // alert(JSON.stringify(data));
                         $("#username").html(data.username);
                         $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile.html">' + data.username + '</a>');
                         // alert(data.profile_pic_url)  
@@ -80,57 +77,8 @@
                     },
                     error: function (data) {
                         // if the token is invalid, redirect to login page
+                        alert(JSON.stringify(data))
                         window.location.href = "http://localhost:3000/login.html";
-                    }
-                });
-                $.ajax({
-                    url: "http://localhost:3000/api/getbooking/" + userid,
-                    type: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + token,
-                    },
-                    contentType: "application/json",
-                    success: function (data) {
-                        // if user has token, get user info
-                        $("#shoppingcart-count").html(data.length);
-                        var totalPrice = 0;
-                        if (data.length == 0) {
-                            $("#shoppingcart-total-price").html("$0");
-                            $("#shoppingcart-items").html("<div class='shoppingcart-empty-title'><h2>You have no flights scheduled!</h2></div>");
-                            $(".shoppingcart-btn").hide()
-                        }
-
-                        for (var i = 0; i < data.length; i++) {
-                            var item = data[i];
-                            // alert(JSON.stringify(item));
-                            // return msg
-                            // {"userid":1,"flightItemid":2,"seatType":"economy","OriginAirport":"Bangkok International Airport","DestinationAirport":"Kuala Lumpur Airport","embarkDate":"2022-12-26","travelTime":"6:50","price":"508"}
-                            var seatType = item.seatType;
-                            var username = item.username;
-                            var OriginAirport = item.OriginAirport;
-                            var OriginCountry = item.OriginCountry;
-                            var DestinationAirport = item.DestinationAirport;
-                            var DestinationCountry = item.DestinationCountry;
-                            var flightCode = item.flightCode;
-                            var embarkDate = item.embarkDate;
-                            var embarkTime = item.embarkTime;
-                            var travelTime = item.travelTime;
-                            var travelTimeHM = travelTime.split(":")[0] + " Hours " + travelTime.split(":")[1] + " Minutes";
-                            var price = item.price;
-                            totalPrice += parseFloat(price);
-                            var totalTravelTimeMinutes = parseInt(travelTime.split(":")[1]) + (parseInt(travelTime.split(":")[0]) * 60);
-                            // add travel time to embark date to get reach date and time
-                            var reachDate = new Date(embarkDate + " " + embarkTime);
-                            var reachTime = new Date(reachDate.getTime() + totalTravelTimeMinutes * 60000);
-                            var reachDateandTime = reachDate.getFullYear() + "-" + (reachDate.getMonth() + 1) + "-" + reachDate.getDate() + " " + reachTime.getHours() + ":" + reachTime.getMinutes();
-                            var returnhtml = '<div class="shoppingcart-Username">'+username+'</div><div class="shoppingcart-item-box"><div class="shoppingcart-OriginCountry">' + OriginCountry + '</div><div class="shoppingcart-DestinationCountry">' + DestinationCountry + '</div><div class="shoppingcart-OriginAirport">' + OriginAirport + '</div><div class="shoppingcart-DestinationAirport">' + DestinationAirport + '</div><div class="shoppingcart-to-box"><span class="iconify shoppingcart-icon" data-icon="ion:airplane" id="flight-detail-plane-icon"></span></div><div class="shoppingcart-embarkDate">' + embarkDate + ' ' + embarkTime + '</div><div class="shoppingcart-travelTime">' + travelTimeHM + '</div><div class="shoppingcart-reachDate">' + reachDateandTime + '</div><div class="shoppingcart-flightCode">' + flightCode + '</div><div class="shoppingcart-seattype">' + seatType + ' seats</div><div class="shoppingcart-price">$ ' + price + '</div></div>';
-                            $("#shoppingcart-items").append(returnhtml);
-                        }
-                        $("#shoppingcart-total-price").html("$ " + totalPrice);
-                    },
-                    error: function (data) {
-                        $("#shoppingcart-count").html("0");
                     }
                 });
             }
@@ -140,35 +88,6 @@
                 localStorage.removeItem("userid");
                 window.location.href = "http://localhost:3000/login.html";
             });
-
-            $("#change-pic-btn").click(() => {
-                var file_data = $('#avatar').prop('files')[0];
-                var form_data = new FormData();
-                var userid = localStorage.getItem("userid");
-                form_data.append('profile_pic', file_data);
-                $.ajax({
-                    url: "http://localhost:3000/api/user/" + userid + "/profile_pic",
-                    type: 'POST',
-                    data: form_data,
-                    headers: {
-                        "Authorization": "Bearer " + token,
-                    },
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    success: function (data) {
-                        $("#picStatus").html("<div class='alert alert-success' role='alert'>Successfully uploaded!</div>");
-                        // reload the page after 3 seconds
-                        setTimeout(function () {
-                            window.location.reload();
-                        }, 2000);
-
-                    },
-                    error: function (data) {
-                        $("#picStatus").html("<div class='alert alert-danger' role='alert'>Error uploading!</div>");
-                    }
-                });
-            })
         })
     </script>
 </head>
@@ -185,7 +104,6 @@
                 <li class="active"><a href="index.html">Home</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
-                <li id="admin-panel"></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-btn">
                 <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
@@ -200,42 +118,11 @@
             </ul>
         </div>
     </nav>
-    <div class="container profile-panel">
-        <div class="container-fluid">
-            <div class="row">
-                <h1>Profile</h1>
-            </div>
-
-        </div>
-        <hr class="line-black" id="profile-panel-line">
-        <div class="container-fluid profile-panel-container">
-            <div class="row profile-panel-info">
-                <h3>Welcome back!</h3>
-                <h3 id="username"></h3>
-                <span id="email"></span>
-                <span id="created_at"></span>
-            </div>
-            <div class="row profile-panel-pfp">
-                <img id="profile-panel-pic">
-                <!-- button to change picture -->
-                <input id="avatar" type="file" name="avatar" />
-                <button id="change-pic-btn" class="btn btn-primary">Change Picture</button>
-                <span id="picStatus"></span>
-            </div>
+    <div class="container admin-panel-body">
+        <div class="admin-panel-user">
+            <h2>Users</h2>
         </div>
     </div>
-    <div class="container profile-panel-booking">
-        
-        <hr class="line-black">
-        <div class="container-fluid profile-panel-container">
-            <div class="row profile-panel-title">
-                <h3 id="profile-panel-flights-title">Your Upcoming flights!</h3>
-            </div>
-        </div>
-        <hr class="line-black">
-        <span id="shoppingcart-items"></span>
-    </div>
-
 
     <div class="footer-clean">
         <footer>

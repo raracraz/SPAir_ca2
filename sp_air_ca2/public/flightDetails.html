@@ -47,7 +47,7 @@
                         var profile_pic = profile_pic_url.split("\\")[2];
                         // alert(profile_pic);
                         $("#profile-pic").attr("src", "images/" + profile_pic);
-                        $("#profile-panel-pic").attr("src", "images/" + profile_pic);
+                        // $("#profile-panel-pic").attr("src", "images/" + profile_pic);
                         $("#email").html('<div>Email: ' + data.email + '</div>');
                         $("#profile_pic_url").html(data.profile_pic_url);
                         $("#created_at").html('<div>Created account at: ' + data.created_at + '</div>');
@@ -112,6 +112,8 @@
                     $("#destinationCountry").html(destinationCountry);
                     $("#embarkDate").html(embarkDate + " " + embarkTime);
                     $("#embarkDate2").html(embarkDate + " " + embarkTime);
+                    $("#flight-detail-seat-image").attr("src", "images/flt_" + flightid + "_flightseats.png");
+                    // alert("images/flt_" + flightid + "_flightseats.png");
                     // parse the travelTime to get the minutes
                     var totalTravelTimeMinutes = parseInt(travelTime.split(":")[1]) + (parseInt(travelTime.split(":")[0]) * 60);
                     // add travel time to embark date to get reach date and time
@@ -142,9 +144,8 @@
                                         $("#flight-booking-result-msg").html("<div class='alert alert-success' role='alert'>Added to shopping cart</div>");
                                         setTimeout(function () {
                                             $("#flight-booking-result-msg").html("");
+                                            window.location.reload();
                                         }, 5000);
-                                        // reload page 
-                                        window.location.reload();
                                     },
                                     error: function (data) {
                                         $("#flight-booking-result-msg").html("<div class='alert alert-danger' role='alert'>Error adding to shopping cart</div>");
@@ -298,12 +299,17 @@
                         <!-- <a href='booking.html?flightid=' class='row flight-detail-book-economy'>Economy</a> -->
                         <span class="flight-detail-book-business" id="flight-booking-business-btn"></span>
                         <!-- <a href="booking.html" class='row flight-detail-book-business'>Business</a> -->
+                        
                     </div>
-
+                    <div class="flight-detail-image-box">
+                        <h2 id="flight-detail-seat-title">Avaliable Seats:</h2>
+                        <img id="flight-detail-seat-image">
+                    </div>
+                    
                     <div id="flight-detail-line-bottom">
+                        
                         <hr class="line-black">
                     </div>
-                    <span id="flight-booking-result-msg"></span>
                 </div>
 
 
