@@ -15,6 +15,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- link jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- link jquery -->
     <link rel="stylesheet" href="src/css/style.css">
     <script>
@@ -38,13 +39,21 @@
                     },
                     contentType: "application/json",
                     success: function (data) {
+                        if (data.role == "admin") {
+                            // if user is admin, show admin panel
+                            $("#admin-panel").html('<a href="adminpanel.html">Admin panel</a>');
+                        }
                         // if user has token, get user info
                         $("#username").html(data.username);
                         $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile.html">' + data.username + '</a>');
                         // alert(data.profile_pic_url)
                         var profile_pic_url = data.profile_pic_url;
                         // alert(pro)
-                        var profile_pic = profile_pic_url.split("\\")[2];
+                        if (profile_pic_url == null) {
+                            var profile_pic = "pfp_default.png";
+                        } else {
+                            var profile_pic = profile_pic_url.split("\\")[2];
+                        }
                         // alert(profile_pic);
                         $("#profile-pic").attr("src", "images/" + profile_pic);
                         // $("#profile-panel-pic").attr("src", "images/" + profile_pic);
@@ -89,6 +98,7 @@
                 },
                 contentType: "application/json",
                 success: function (data) {
+                    // alert(JSON.stringify(data))
                     var flight = data[0];
                     var flightid = flight.flightid;
                     var flightCode = flight.flightCode;
@@ -100,6 +110,7 @@
                     var embarkDate = flight.embarkDate;
                     var embarkTime = flight.embarkTime;
                     var travelTime = flight.travelTime;
+                    var flightseat_url = flight.flightseat_pic_url;
                     var price = flight.price;
                     $("#type").html(type)
                     $("#aircraft").html(aircraft);
@@ -112,7 +123,8 @@
                     $("#destinationCountry").html(destinationCountry);
                     $("#embarkDate").html(embarkDate + " " + embarkTime);
                     $("#embarkDate2").html(embarkDate + " " + embarkTime);
-                    $("#flight-detail-seat-image").attr("src", "images/flt_" + flightid + "_flightseats.png");
+                    $("#flight-detail-seat-image").attr("src", "images/" + flightseat_url.split("\\")[2]);
+                    
                     // alert("images/flt_" + flightid + "_flightseats.png");
                     // parse the travelTime to get the minutes
                     var totalTravelTimeMinutes = parseInt(travelTime.split(":")[1]) + (parseInt(travelTime.split(":")[0]) * 60);
@@ -197,16 +209,72 @@
                             }
                         }
                     );
-                    $("#logout-btn").click(() => {
-                        localStorage.removeItem("token");
-                        localStorage.removeItem("userid");
-                        window.location.href = "http://localhost:3000/flightDetails.html?flightid=" + flightid;
-                    });
                 },
                 error: function (data) {
                     alert(JSON.stringify(data))
                     window.location.href = "http://localhost:3000/index.html";
                 }
+            });
+            var uri = window.location.search;
+            var param = new URLSearchParams(uri);
+            var originAirport = parseInt(param.get('origin'));
+            var destinationAirport = parseInt(param.get('destination'));
+            var departDate = param.get('departureDate');
+            var returnDate = param.get('returnDate');
+            var type = param.get('trip-type');
+
+            // alert(originAirport + " " + destinationAirport + " " + departDate + " " + returnDate + " " + type);
+            // alert("http://localhost:3000/api/flights/" + originAirport + "/" + destinationAirport + "/" + departDate + "/" + returnDate + "/" + type,);
+            if (returnDate == "") {
+                returnDate = "0000-00-00";
+            }
+            $.ajax({
+                // url: "http://localhost:3000/api/flights/" + originAirport + "/" + destinationAirport + "/" + departDate + "/" + returnDate + "/" + type,
+                // url: /api/flights/returnonly/:originAirport/:destinationAirport/:departDate/:returnDate/:type
+                url: "http://localhost:3000/api/flights/returnonly/" + originAirport + "/" + destinationAirport + "/" + departDate + "/" + returnDate + "/" + type,
+                type: "GET",
+                contentType: "application/json",
+                success: function (data) {
+                    // if user has token, get user info
+                    // alert(JSON.stringify(data));
+                    // alert(JSON.stringify(data));
+                    var html = "";
+                    // parse the data and display the result 
+                    var returnJSON = data.return;
+                    if (returnJSON == undefined) {
+                        returnJSON = [];
+                    }
+                    // alert(JSON.stringify(one_wayJSON));
+                    // alert(JSON.stringify(returnJSON))
+                    $("#flightOriginToDestination").html("<h2 class='card-title'>Return Flight Listings:</h2>");
+                    // if there is no flights found, display message
+                    if (returnJSON.length == 0) {
+                        $("#flightOriginToDestination").append("<div class='flight-listing-notfound'><h3 class='flight-listing-notfound' id='flight-listing-title'>No flights found</h3></div>");
+                    } else {
+                        for (var j = 0; j < returnJSON.length; j++) {
+                            var count = j + 1;
+                            var flight_id = returnJSON[j].flightid;
+                            var flightCode = returnJSON[j].flightCode;
+                            var aircraft = returnJSON[j].aircraft;
+                            var embarkDate = returnJSON[j].embarkDate;
+                            var embarkTime = returnJSON[j].embarkTime;
+                            var travelTime = returnJSON[j].travelTime;
+                            var origin_airport = returnJSON[j].originAirport;
+                            var destination_airport = returnJSON[j].destinationAirport;
+                            var price = returnJSON[j].price;
+                            var returnhtml = "<div id='flight-listing'><div class='row card-listing'><div class='col-md-12'><div class='card'><div class='card-body'><div class='row'><div class='col-md-12 card-listing-info'><div class='row'><div class='col-md-12'><h4 class='card-title'>" + count + ". " + origin_airport + " to " + destination_airport + "</h4></div></div><div class='row flight-listing-depart'><div class='col-md-12'><p class='card-text'> Departure Date: " + embarkDate + " " + embarkTime + "</p></div></div><div class='row flight-listing-price'><div class='col-md-12'><p class='card-text'>Price: $" + price + "</p></div></div><div class='row flight-listing-status'><div class='col-md-12'><p id='flight-listing-status-title'>Economy</p></div></div><div class='row flight-listing-btn'><div class='col-md-12'><a href='http://localhost:3000/flightDetails.html?flightid=" + flight_id + "' class='btn btn-primary'>Book Flight</a></div></div></div></div></div></div></div></div></div></div></div>";
+                            $("#flights").append(returnhtml);
+                        }
+                    }
+                },
+                error: function (data) {
+                    alert("error");
+                }
+            });
+            $("#logout-btn").click(() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userid");
+                window.location.href = "http://localhost:3000/flightDetails.html?flightid=" + flightid;
             });
         });
     </script>
@@ -224,6 +292,7 @@
                 <li class="active"><a href="index.html">Home</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
+                <li id="admin-panel"></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-btn">
                 <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
@@ -299,22 +368,24 @@
                         <!-- <a href='booking.html?flightid=' class='row flight-detail-book-economy'>Economy</a> -->
                         <span class="flight-detail-book-business" id="flight-booking-business-btn"></span>
                         <!-- <a href="booking.html" class='row flight-detail-book-business'>Business</a> -->
-                        
+
                     </div>
                     <div class="flight-detail-image-box">
                         <h2 id="flight-detail-seat-title">Avaliable Seats:</h2>
                         <img id="flight-detail-seat-image">
                     </div>
-                    
+
                     <div id="flight-detail-line-bottom">
-                        
+
                         <hr class="line-black">
                     </div>
                 </div>
-
-
                 <hr>
             </div>
+        </div>
+        <div class="container-fluid flight-detail-return-listing-panel">
+            <span id="flightOriginToDestination"></span>
+            <span id="flights"></span>
         </div>
     </div>
 

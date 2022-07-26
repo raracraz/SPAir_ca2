@@ -8,12 +8,14 @@
     <title>Homepage</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- link jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- link jquery -->
     <link rel="stylesheet" href="src/css/style.css">
     <script>
@@ -49,7 +51,7 @@
                         var profile_pic_url = data.profile_pic_url;
                         // alert(pro)
                         if(profile_pic_url == null){
-                            profile_pic = "pfp_default.png";
+                            var profile_pic = "pfp_default.png";
                         } else {
                             var profile_pic = profile_pic_url.split("\\")[2];
                         }
@@ -146,6 +148,7 @@
                 var form_data = new FormData();
                 var userid = localStorage.getItem("userid");
                 form_data.append('profile_pic', file_data);
+                // alert(JSON.stringify(form_data));
                 $.ajax({
                     url: "http://localhost:3000/api/user/" + userid + "/profile_pic",
                     type: 'POST',

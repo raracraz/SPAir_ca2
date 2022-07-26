@@ -14,6 +14,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- link jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- link jquery -->
     <link rel="stylesheet" href="src/css/style.css">
     <script>
@@ -35,13 +36,21 @@
                     },
                     contentType: "application/json",
                     success: function (data) {
+                        if (data.role == "admin") {
+                            // if user is admin, show admin panel
+                            $("#admin-panel").html('<a href="adminpanel.html">Admin panel</a>');
+                        } 
                         // if user has token, get user info
                         $("#username").html(data.username);
                         $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile.html">' + data.username + '</a>');
                         // alert(data.profile_pic_url)
                         var profile_pic_url = data.profile_pic_url;
                         // alert(pro)
-                        var profile_pic = profile_pic_url.split("\\")[2];
+                        if(profile_pic_url == null){
+                            var profile_pic = "pfp_default.png";
+                        } else {
+                            var profile_pic = profile_pic_url.split("\\")[2];
+                        }
                         // alert(profile_pic);
                         $("#profile-pic").attr("src", "images/" + profile_pic);
                         $("#profile-panel-pic").attr("src", "images/" + profile_pic);
@@ -121,7 +130,7 @@
                             var origin_airport = one_wayJSON[i].originAirport;
                             var destination_airport = one_wayJSON[i].destinationAirport;
                             var price = one_wayJSON[i].price;
-                            var one_wayhtml = "<div id='flight-listing'><div class='row card-listing'><div class='col-md-12'><div class='card'><div class='card-body'><div class='row'><div class='col-md-12 card-listing-info'><div class='row'><div class='col-md-12'><h4 class='card-title'>" + count + ". " + origin_airport + " to " + destination_airport + "</h4></div></div><div class='row flight-listing-depart'><div class='col-md-12'><p class='card-text'> Departure Date: " + embarkDate + " " + embarkTime + "</p></div></div><div class='row flight-listing-price'><div class='col-md-12'><p class='card-text'>Price: $" + price + "</p></div></div><div class='row flight-listing-status'><div class='col-md-12'><p id='flight-listing-status-title'>Economy</p></div></div><div class='row flight-listing-btn'><div class='col-md-12'><a href='http://localhost:3000/flightDetails.html?flightid=" + flight_id + "&type=" + type + "' class='btn btn-primary'>Book Flight</a></div></div></div></div></div></div></div></div></div></div></div>";
+                            var one_wayhtml = "<div id='flight-listing'><div class='row card-listing'><div class='col-md-12'><div class='card'><div class='card-body'><div class='row'><div class='col-md-12 card-listing-info'><div class='row'><div class='col-md-12'><h4 class='card-title'>" + count + ". " + origin_airport + " to " + destination_airport + "</h4></div></div><div class='row flight-listing-depart'><div class='col-md-12'><p class='card-text'> Departure Date: " + embarkDate + " " + embarkTime + "</p></div></div><div class='row flight-listing-price'><div class='col-md-12'><p class='card-text'>Price: $" + price + "</p></div></div><div class='row flight-listing-status'><div class='col-md-12'><p id='flight-listing-status-title'>Economy</p></div></div><div class='row flight-listing-btn'><div class='col-md-12'><a href='http://localhost:3000/flightDetails.html?flightid=" + flight_id + "&type=" + type + "&origin="+ originAirport + "&destination="+ destinationAirport + "&departureDate=" + departDate + "&returnDate=" + returnDate + "&trip-type=" + type + "' class='btn btn-primary'>Book Flight</a></div></div></div></div></div></div></div></div></div></div></div>";
                             $("#flights").append(one_wayhtml);
                         }
 
@@ -138,7 +147,6 @@
                             var price = returnJSON[j].price;
                             var returnhtml = "<div id='flight-listing'><div class='row card-listing'><div class='col-md-12'><div class='card'><div class='card-body'><div class='row'><div class='col-md-12 card-listing-info'><div class='row'><div class='col-md-12'><h4 class='card-title'>" + count + ". " + origin_airport + " to " + destination_airport + "</h4></div></div><div class='row flight-listing-depart'><div class='col-md-12'><p class='card-text'> Departure Date: " + embarkDate + " " + embarkTime + "</p></div></div><div class='row flight-listing-price'><div class='col-md-12'><p class='card-text'>Price: $" + price + "</p></div></div><div class='row flight-listing-status'><div class='col-md-12'><p id='flight-listing-status-title'>Economy</p></div></div><div class='row flight-listing-btn'><div class='col-md-12'><a href='http://localhost:3000/flightDetails.html?flightid=" + flight_id + "' class='btn btn-primary'>Book Flight</a></div></div></div></div></div></div></div></div></div></div></div>";
                             $("#flights").append(returnhtml);
-
                         }
                     }
                 },
@@ -167,6 +175,7 @@
                 <li class="active"><a href="index.html">Home</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
+                <li id="admin-panel"></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-btn">
                 <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>

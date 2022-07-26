@@ -14,6 +14,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- link jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- link jquery -->
     <link rel="stylesheet" href="src/css/style.css">
     <script>
@@ -35,13 +36,21 @@
                     },
                     contentType: "application/json",
                     success: function (data) {
+                        if (data.role == "admin") {
+                            // if user is admin, show admin panel
+                            $("#admin-panel").html('<a href="adminpanel.html">Admin panel</a>');
+                        } 
                         // if user has token, get user info
                         $("#username").html(data.username);
                         $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile.html">' + data.username + '</a>');
                         // alert(data.profile_pic_url)
                         var profile_pic_url = data.profile_pic_url;
                         // alert(pro)
-                        var profile_pic = profile_pic_url.split("\\")[2];
+                        if(profile_pic_url == null){
+                            var profile_pic = "pfp_default.png";
+                        } else {
+                            var profile_pic = profile_pic_url.split("\\")[2];
+                        }
                         // alert(profile_pic);
                         $("#profile-pic").attr("src", "images/" + profile_pic);
                         $("#profile-panel-pic").attr("src", "images/" + profile_pic);
@@ -209,6 +218,7 @@
                 <li class="active"><a href="index.html">Home</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
+                <li id="admin-panel"></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-btn">
                 <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>

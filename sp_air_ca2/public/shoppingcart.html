@@ -15,6 +15,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- link jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- link jquery -->
     <link rel="stylesheet" href="src/css/style.css">
     <script>
@@ -35,13 +36,21 @@
                     },
                     contentType: "application/json",
                     success: function (data) {
+                        if (data.role == "admin") {
+                            // if user is admin, show admin panel
+                            $("#admin-panel").html('<a href="adminpanel.html">Admin panel</a>');
+                        }
                         // if user has token, get user info
                         $("#username").html(data.username);
                         $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile.html">' + data.username + '</a>');
                         // alert(data.profile_pic_url)
                         var profile_pic_url = data.profile_pic_url;
                         // alert(pro)
-                        var profile_pic = profile_pic_url.split("\\")[2];
+                        if (profile_pic_url == null) {
+                            var profile_pic = "pfp_default.png";
+                        } else {
+                            var profile_pic = profile_pic_url.split("\\")[2];
+                        }
                         // alert(profile_pic);
                         $("#profile-pic").attr("src", "images/" + profile_pic);
                         $("#profile-panel-pic").attr("src", "images/" + profile_pic);
@@ -62,7 +71,7 @@
                                 // if user has token, get user info
                                 $("#shoppingcart-count").html(data.length);
                                 var totalPrice = 0;
-                                if (data.length == 0){
+                                if (data.length == 0) {
                                     $("#shoppingcart-total-price").html("$0");
                                     $("#shoppingcart-items").html("<div class='shoppingcart-empty-title'><h2>Your shopping cart is empty</h2></div>");
                                     $(".shoppingcart-btn").hide()
@@ -90,16 +99,65 @@
                                     var reachDate = new Date(embarkDate + " " + embarkTime);
                                     var reachTime = new Date(reachDate.getTime() + totalTravelTimeMinutes * 60000);
                                     var reachDateandTime = reachDate.getFullYear() + "-" + (reachDate.getMonth() + 1) + "-" + reachDate.getDate() + " " + reachTime.getHours() + ":" + reachTime.getMinutes();
-                                    var returnhtml = '<div class="shoppingcart-item-box"><div class="shoppingcart-OriginCountry">' + OriginCountry + '</div><div class="shoppingcart-DestinationCountry">' + DestinationCountry + '</div><div class="shoppingcart-OriginAirport">' + OriginAirport + '</div><div class="shoppingcart-DestinationAirport">' + DestinationAirport + '</div><div class="shoppingcart-to-box"><span class="iconify shoppingcart-icon" data-icon="ion:airplane" id="flight-detail-plane-icon"></span></div><div class="shoppingcart-embarkDate">' + embarkDate + ' ' + embarkTime + '</div><div class="shoppingcart-travelTime">' + travelTimeHM + '</div><div class="shoppingcart-reachDate">' + reachDateandTime + '</div><div class="shoppingcart-flightCode">' + flightCode + '</div><div class="shoppingcart-seattype">' + seatType + ' seats</div><div class="shoppingcart-price">$ ' + price + '</div></div>';
+                                    var returnhtml = '<div class="shoppingcart-item-box"><div class="shoppingcart-OriginCountry">' + OriginCountry + '</div><div class="shoppingcart-DestinationCountry">' + DestinationCountry + '</div><div class="shoppingcart-OriginAirport">' + OriginAirport + '</div><div class="shoppingcart-DestinationAirport">' + DestinationAirport + '</div><div class="shoppingcart-to-box"><span class="iconify shoppingcart-icon" data-icon="ion:airplane" id="flight-detail-plane-icon"></span></div><div class="shoppingcart-embarkDate">' + embarkDate + ' ' + embarkTime + '</div><div class="shoppingcart-travelTime">' + travelTimeHM + '</div><div class="shoppingcart-reachDate">' + reachDateandTime + '</div><div class="shoppingcart-flightCode">' + flightCode + '</div><div class="shoppingcart-seattype">' + seatType + ' seats</div><div class="shoppingcart-price">$ ' + price + '</div></div><label class="shoppingcart-promo-title">Promotion Code</label><div class="shoppingcart-addpromo"><input type="text"></input><button class="btn btn-success shoppingcart-promo-submit-btn">Go</button></div><span class="shopping-cart-promo-invalid-error"></span>';
                                     $("#shoppingcart-items").append(returnhtml);
                                 }
-                                $("#shoppingcart-total-price").html("$ " + totalPrice);
+                                // set totalPrice to local storage
+                                if(localStorage.getItem("totalPrice") == null){
+                                    localStorage.setItem("totalPrice", totalPrice);
+                                }
+                                // get totalPrice from local storage
                                 $("#shoppingcart-booking-btn").html('<a class="shoppingcart-btn-text" href="booking.html">Proceed to payment details</a>').click(
                                     function () {
                                         localStorage.setItem('totalPrice', totalPrice);
                                         localStorage.setItem('shoppingcart', JSON.stringify(data));
                                     }
                                 );
+                                $(document).on("click", ".shoppingcart-promo-submit-btn", function () {
+                                    var promoCode = $(this).closest(".shoppingcart-addpromo").find("input").val();
+                                    $.ajax({
+                                        url: "http://localhost:3000/api/promotions/promocode/" + promoCode,
+                                        type: "GET",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                        },
+                                        contentType: "application/json",
+                                        success: function (data) {
+                                            // if data is empty then promo code is invalid
+                                            if (data.length == 0) {
+                                                // $(".shopping-cart-promo-invalid-error").html("<div class='alert alert-danger'>Promotion code is invalid</div>");
+                                                // only show the error message for the nearest .shoppingcart-promo-submit-btn element
+                                                $("#shoppingcart-promo-invalid-modal").modal("show");
+                                            } else {
+                                                // if data is not empty, then promo code is valid
+                                                // get the total price from local storage and apply the discount to it
+                                                $("#shoppingcart-promo-success-modal").modal("show");
+                                                // alert(JSON.stringify(data));
+                                                var discountedprice = parseInt(price) - (parseInt(price) * (parseInt(data[0].discountoffered)/100));
+                                                alert(price + " " + discountedprice);
+                                                // update the total price in the shopping cart
+                                                // alert(discountedprice)
+                                                // $(".shoppingcart-item-box").closest(".shoppingcart-price").html("$ " + discountedprice);
+                                                
+                                                
+                                                // only append the discount to the nearest .shoppingcart-price element
+                                                // $(".shoppingcart-price").append('<div class="shoppingcart-discount">$ ' + discountedprice + '</div>');
+
+                                                // $("#shoppingcart-total-price").val()
+                                                // get the total price from local storage and apply the discount to it
+                                                var totalPrice = localStorage.getItem('totalPrice');
+                                                totalPrice = totalPrice - price + discountedprice;
+                                                localStorage.setItem('totalPrice', totalPrice);
+                                                setTimeout(function () {
+                                                    window.location.reload();
+                                                }, 3000);
+                                            }
+                                        },
+                                        error: function (data) {
+                                            $("#shoppingcart-promo-invalid-modal").modal("show");
+                                        }
+                                    })
+                                });
                             },
                             error: function (data) {
                                 $("#shoppingcart-count").html("0");
@@ -116,6 +174,8 @@
                 localStorage.removeItem("userid");
                 window.location.href = "http://localhost:3000/searchResult.html?origin=" + originAirport + "&destination=" + destinationAirport + "&departureDate=" + departureDate + "&returnDate=" + returnDate + "&trip-type=" + type;
             });
+            var totalPrice = localStorage.getItem("totalPrice");
+            $("#shoppingcart-total-price").html("$ " + totalPrice);
         });
     </script>
 </head>
@@ -132,6 +192,7 @@
                 <li class="active"><a href="index.html">Home</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
+                <li id="admin-panel"></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-btn">
                 <!-- add a cart option -->
@@ -163,6 +224,44 @@
             <!-- button to booking page -->
             <div class="shoppingcart-btn">
                 <span id="shoppingcart-booking-btn"></span>
+            </div>
+        </div>
+    </div>
+    <!-- modal for invalid promotion code -->
+    <div class="modal fade" id="shoppingcart-promo-invalid-modal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Promotion code is invalid</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Please enter a valid promotion code</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal for successful promotion code -->
+    <div class="modal fade" id="shoppingcart-promo-success-modal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Promotion code is valid</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You successfully added your promo code</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>

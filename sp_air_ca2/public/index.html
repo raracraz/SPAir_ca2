@@ -14,140 +14,12 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- link jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- link jquery -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+
     <link rel="stylesheet" href="src/css/style.css">
-    <script>
-        $(document).ready(function () {
-            var token = localStorage.getItem('token');
-            var userid = localStorage.getItem('userid');
-            if (!token) {
-                // user not logged in
-                $("#nav-right-loggedin").hide()
-            } else {
-                // user is logged in
-                $.ajax({
-                    url: "http://localhost:3000/api/user/" + userid,
-                    type: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + token,
-                    },
-                    contentType: "application/json",
-                    success: function (data) {
-                        // if user has token, get user info
-                        $("#username").html(data.username);
-                        $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile.html">' + data.username + '</a>');
-                        // alert(data.profile_pic_url)
-                        var profile_pic_url = data.profile_pic_url;
-                        // alert(pro)
-                        var profile_pic = profile_pic_url.split("\\")[2];
-                        // alert(profile_pic);
-                        $("#profile-pic").attr("src", "images/" + profile_pic);
-                        $("#profile-panel-pic").attr("src", "images/" + profile_pic);
-                        $("#email").html('<div>Email: ' + data.email + '</div>');
-                        $("#profile_pic_url").html(data.profile_pic_url);
-                        $("#created_at").html('<div>Created account at: ' + data.created_at + '</div>');
-                        // hide sign up and login buttons
-                        $("#nav-right-btn").hide();
-                        $.ajax({
-                            url: "http://localhost:3000/api/shoppingcart/" + userid,
-                            type: "GET",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": "Bearer " + token,
-                            },
-                            contentType: "application/json",
-                            success: function (data) {
-                                // if user has token, get user info
-                                $("#shoppingcart-count").html(data.length);
-                            },
-                            error: function (data) {
-                                $("#shoppingcart-count").html("0");
-                            }
-                        })
-                    },
-                    error: function (data) {
-                        // if the token is invalid, redirect to login page
-                        window.location.href = "http://localhost:3000/index.html";
-                    }
-                });
-            };
-            // get all airports
-            $.ajax({
-                url: "http://localhost:3000/api/airport",
-                type: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token,
-                },
-                contentType: "application/json",
-                success: function (data) {
-                    // if user has token, get user info
-                    var airports = data;
-                    var airport_list = [];
-                    for (var i = 0; i < airports.length; i++) {
-                        var airport = airports[i];
-                        var airport_name = airport.airport_name;
-                        var airport_id = airport.airportid;
-                        if (airport_name) {
-                            $('#origin').append('<option value="' + airport_id + '">' + airport_name + '</option>');
-                            $('#destination').append('<option value="' + airport_id + '">' + airport_name + '</option>');
-                        }
-                    }
-                },
-                error: function (data) {
-                    // if the token is invalid, redirect to login page
-                    window.location.href = "http://localhost:3000/index.html/";
-                }
-            });
-
-            $("#logout-btn").click(() => {
-                localStorage.removeItem("token");
-                localStorage.removeItem("userid");
-                window.location.href = "http://localhost:3000/index.html";
-            });
-
-            $("#form-submit-btn").click(() => {
-                // get the value from the input
-                var originAirport = $("#origin").val();
-                var destinationAirport = $("#destination").val();
-                var departureDate = $("#depart-date").val();
-                var returnDate = $("#return-date").val();
-                // replace the - with /
-                // get the value of type from the radio
-                // alert(originAirport + " " + destinationAirport + " " + departureDate + " " + returnDate);
-                var type = $('input[name=trip-type]:checked').val();
-                if (!originAirport || !destinationAirport || !departureDate) {
-                    $("#form-error").html('<div class="alert alert-danger"><strong>Please fill in all fields</strong></div>');
-                    // $("#form-error").show();
-                    setTimeout(() => $("#form-error").html(''), 5000);
-                } else if (originAirport == destinationAirport) {
-                    $("#form-error").html('<div class="alert alert-danger"><strong>Origin Airport cannot be the same as Destination Airport</strong></div>');
-                    // $("#form-error").show();
-                    setTimeout(() => $("#form-error").html(''), 5000);
-                } else {
-                    // redirect to the search page
-                    window.location.href = "http://localhost:3000/searchResult.html?origin=" + originAirport + "&destination=" + destinationAirport + "&departureDate=" + departureDate + "&returnDate=" + returnDate + "&trip-type=" + type;
-                }
-            });
-            $("#return-date").prop("disabled", true);
-            $("#return-date").css("background-color", "lightgray");
-            $("#return-date").attr("type", "text");
-            $("#return-date").val("");
-            $("input[name=trip-type]").change(function () {
-                if ($(this).val() == "one_way") {
-                    $("#return-date").prop("disabled", true);
-                    $("#return-date").css("background-color", "lightgray");
-                    $("#return-date").attr("type", "text");
-                    $("#return-date").val("");
-                } else {
-                    $("#return-date").prop("type", "date");
-                    $("#return-date").css("background-color", "white");
-                    $("#return-date").prop("disabled", false);
-                }
-            });
-        });
-    </script>
 </head>
 
 <body>
@@ -162,6 +34,7 @@
                 <li class="active"><a href="index.html">Home</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
+                <li id="admin-panel"></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-btn">
                 <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
@@ -176,6 +49,9 @@
             </ul>
         </div>
     </nav>
+    <div class="container-fluid home-page">
+
+    </div>
     <div class="container-fluid home-page-body">
         <div class="book-flight-box">
             <h2>Book Trip</h2>
@@ -218,10 +94,24 @@
             </div>
             <span id="form-error"></span>
         </div>
+        <!-- promotion table to list all promotions on going -->
     </div>
-
-
-
+    <div class="container-fluid promotion-table">
+        <h2>On Going Promotions</h2>
+        <hr class="line-black">
+        <!-- use datatable to create a table for listing promotions -->
+        <table id="promotion-table" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Flight Code</th>
+                    <th>Promotion Code</th>
+                    <th>Discount Offered</th>
+                </tr>
+            </thead>
+            <tbody id="promotion-table-items"></tbody>
+        </table>
+    </div>
     <div class="footer-clean">
         <footer>
             <div class="container">
@@ -261,5 +151,179 @@
         </footer>
     </div>
 </body>
+<script>
+    $(document).ready(function () {
+        var token = localStorage.getItem('token');
+        var userid = localStorage.getItem('userid');
+        if (!token) {
+            // user not logged in
+            $("#nav-right-loggedin").hide()
+        } else {
+            // user is logged in
+            $.ajax({
+                url: "http://localhost:3000/api/user/" + userid,
+                type: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                },
+                contentType: "application/json",
+                success: function (data) {
+                    if (data.role == "admin") {
+                        // if user is admin, show admin panel
+                        $("#admin-panel").html('<a href="adminpanel.html">Admin panel</a>');
+                    }
+                    // if user has token, get user info
+                    $("#username").html(data.username);
+                    $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile.html">' + data.username + '</a>');
+                    // alert(data.profile_pic_url)
+                    var profile_pic_url = data.profile_pic_url;
+                    // alert(pro)
+                    if (profile_pic_url == null) {
+                        var profile_pic = "pfp_default.png";
+                    } else {
+                        var profile_pic = profile_pic_url.split("\\")[2];
+                    }
+                    // alert(profile_pic);
+                    $("#profile-pic").attr("src", "images/" + profile_pic);
+                    $("#profile-panel-pic").attr("src", "images/" + profile_pic);
+                    $("#email").html('<div>Email: ' + data.email + '</div>');
+                    $("#profile_pic_url").html(data.profile_pic_url);
+                    $("#created_at").html('<div>Created account at: ' + data.created_at + '</div>');
+                    // hide sign up and login buttons
+                    $("#nav-right-btn").hide();
+                    $.ajax({
+                        url: "http://localhost:3000/api/shoppingcart/" + userid,
+                        type: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + token,
+                        },
+                        contentType: "application/json",
+                        success: function (data) {
+                            // if user has token, get user info
+                            $("#shoppingcart-count").html(data.length);
+                        },
+                        error: function (data) {
+                            $("#shoppingcart-count").html("0");
+                        }
+                    })
+                },
+                error: function (data) {
+                    // if the token is invalid, redirect to login page
+                    window.location.href = "http://localhost:3000/index.html";
+                }
+            });
+        };
+        // get all airports
+        $.ajax({
+            url: "http://localhost:3000/api/airport",
+            type: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token,
+            },
+            contentType: "application/json",
+            success: function (data) {
+                // if user has token, get user info
+                var airports = data;
+                var airport_list = [];
+                for (var i = 0; i < airports.length; i++) {
+                    var airport = airports[i];
+                    var airport_name = airport.airport_name;
+                    var airport_id = airport.airportid;
+                    if (airport_name) {
+                        $('#origin').append('<option value="' + airport_id + '">' + airport_name + '</option>');
+                        $('#destination').append('<option value="' + airport_id + '">' + airport_name + '</option>');
+                    }
+                }
+            },
+            error: function (data) {
+                // if the token is invalid, redirect to login page
+                window.location.href = "http://localhost:3000/index.html/";
+            }
+        });
+        $.ajax(
+            {
+                url: "http://localhost:3000/api/promotions/promocode",
+                type: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                },
+                contentType: "application/json",
+                success: function (data) {
+                    // if user has token, get user info
+                    var promocodes = data;
+                    var promocode_list = [];
+                    // alert(JSON.stringify(data))
+                    for (var i = 0; i < data.length; i++) {
+                        var promocode = promocodes[i];
+                        var promotionid = promocode.promotionid;
+                        var flightcode = promocode.flightCode;
+                        var discountoffered = promocode.discountoffered;
+                        var promotioncode = promocode.promotioncode;
+                        var promocode_item_html = '<tr><td>' + (i+1) + '</td><td>' + flightcode + '</td><td>' + promotioncode + '</td><td>' + discountoffered + '%' + ' </td></tr>';
+                        $('#promotion-table-items').append(promocode_item_html);
+                    }
+                    $('#promotion-table').DataTable({
+                        "columnDefs": [{
+                            "targets": [0],
+                            "visible": true,
+                            "searchable": true
+                        }]
+                    });
+                },
+            }
+        )
+
+        $("#logout-btn").click(() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userid");
+            window.location.href = "http://localhost:3000/index.html";
+        });
+
+        $("#form-submit-btn").click(() => {
+            // get the value from the input
+            var originAirport = $("#origin").val();
+            var destinationAirport = $("#destination").val();
+            var departureDate = $("#depart-date").val();
+            var returnDate = $("#return-date").val();
+            // replace the - with /
+            // get the value of type from the radio
+            // alert(originAirport + " " + destinationAirport + " " + departureDate + " " + returnDate);
+            var type = $('input[name=trip-type]:checked').val();
+            if (!originAirport || !destinationAirport || !departureDate) {
+                $("#form-error").html('<div class="alert alert-danger"><strong>Please fill in all fields</strong></div>');
+                // $("#form-error").show();
+                setTimeout(() => $("#form-error").html(''), 5000);
+            } else if (originAirport == destinationAirport) {
+                $("#form-error").html('<div class="alert alert-danger"><strong>Origin Airport cannot be the same as Destination Airport</strong></div>');
+                // $("#form-error").show();
+                setTimeout(() => $("#form-error").html(''), 5000);
+            } else {
+                // redirect to the search page
+                window.location.href = "http://localhost:3000/searchResult.html?origin=" + originAirport + "&destination=" + destinationAirport + "&departureDate=" + departureDate + "&returnDate=" + returnDate + "&trip-type=" + type;
+            }
+        });
+        $("#return-date").prop("disabled", true);
+        $("#return-date").css("background-color", "lightgray");
+        $("#return-date").attr("type", "text");
+        $("#return-date").val("");
+        $("input[name=trip-type]").change(function () {
+            if ($(this).val() == "one_way") {
+                $("#return-date").prop("disabled", true);
+                $("#return-date").css("background-color", "lightgray");
+                $("#return-date").attr("type", "text");
+                $("#return-date").val("");
+            } else {
+                $("#return-date").prop("type", "date");
+                $("#return-date").css("background-color", "white");
+                $("#return-date").prop("disabled", false);
+            }
+        });
+    });
+
+</script>
 
 </html>

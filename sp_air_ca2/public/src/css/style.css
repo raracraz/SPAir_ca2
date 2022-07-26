@@ -12,7 +12,7 @@ body {
 .home-page-body {
     background-color: #f2f2f2;
     margin-top: 15%;
-    margin-bottom: 10%;
+    margin-bottom: 5%;
     border-radius: 10px;
     box-shadow: 0px 0px 10px #888888;
     width: 80%;
@@ -35,6 +35,16 @@ body {
     grid-row: 1;
     font-size: 14px;
     color: rgb(0, 65, 112);
+}
+
+.promotion-table{
+    background-color: #f2f2f2;
+    width: 80%;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px #888888;
+    margin-bottom: 5%;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
 }
 
 .form-from-input {
@@ -85,6 +95,14 @@ body {
     width: 80%;
 }
 
+.flight-detail-return-listing-panel{
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px #888888;
+    width: 80%;
+    margin-bottom: 5%;
+}
+
 .flight-listing-notfound {
     /* text center */
     align-items: center;
@@ -101,7 +119,6 @@ body {
     background-color: #ffffff;
     border-radius: 3px;
     color: #000;
-    box-shadow: 0px 0px 10px #888888;
     width: 90%;
     margin-left: 5%;
     margin-bottom: 1%;
@@ -124,14 +141,14 @@ body {
     grid-column: 1;
     grid-row: 2;
     font-size: 14px;
-    margin-left: 1%;
+    margin-left: 6%;
     color: rgb(0, 65, 112);
 }
 
 .flight-listing-btn {
     grid-column: 1;
     grid-row: 3;
-    margin-left: 1%;
+    margin-left: 6%;
 }
 
 .flight-listing-price {
@@ -900,6 +917,19 @@ div.omrs-input-group {
     color: white;
 }
 
+.shoppingcart-promo-title{
+    margin-left: 10%;
+}
+
+.shoppingcart-addpromo{
+    margin-left: 10%;
+}
+
+.shoppingcart-promo-submit-btn{
+    margin-left: 5px;
+    margin-bottom: 2px;
+}
+
 .profile-panel {
     margin-top: 10%;
     margin-left: auto;
@@ -982,12 +1012,114 @@ div.omrs-input-group {
     display: inline-block;
 }
 
-.admin-panel-body{
+.admin-panel-user{
     margin-top: 10%;
+    margin-bottom: 5%;
+    margin-left: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
     background-color: white;
-    width: 80%;
+    width: 90%;
     box-shadow: #8b8b8b 0px 0px 2px;
     border-radius: 2px;
+    overflow: hidden;
+}
+
+.admin-user-box-title{
+    background-color: #1e4bd1;
+    color: white;
+    padding-left: 5%;
+    padding-right: 5%;
+    border-radius: 10px;
+    box-shadow: #005ebd 0px 0px 5px ;
+    margin-bottom: 2%;
+    margin-top: 1%;
+}
+
+.admin-panel-airport{
+    margin-top: 5%;
+    margin-bottom: 5%;
+    margin-left: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
+    background-color: white;
+    width: 90%;
+    box-shadow: #8b8b8b 0px 0px 2px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.admin-panel-flights{
+    margin-top: 5%;
+    margin-bottom: 5%;
+    background-color: white;
+    width: 105%;
+    padding-left: 2%;
+    padding-right: 2%;
+    margin-left: -2.5%;
+    box-shadow: #8b8b8b 0px 0px 2px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.admin-panel-promotions{
+    margin-top: 5%;
+    margin-bottom: 5%;
+    margin-left: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
+    background-color: white;
+    width: 90%;
+    box-shadow: #8b8b8b 0px 0px 2px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.admin-panel-title{
+    margin-left: 5%;
+}
+
+.admin-panel-line-separator{
+    width: 95%;
+}
+
+#admin-panel-airport-add-btn{
+    margin-left: 25%;
+    margin-bottom: 2%;
+    width: 50%;
+}
+
+#admin-panel-flight-add-btn{
+    margin-left: 25%;
+    margin-bottom: 2%;
+    width: 50%;
+}
+
+#admin-panel-promotion-add-btn{
+    margin-left: 25%;
+    margin-bottom: 2%;
+    width: 50%;
+}
+
+.modal-title{
+    text-align: center;
+    font-size: 26px;
+}
+
+.modal-success-body{
+    text-align: center;
+    font-size: 16px;
+}
+
+.modal-error-body{
+    text-align: center;
+    font-size: 16px;
+}
+
+.admin-panel-search-box{
+    margin-left: 70%;
+    margin-top: -4%;
+    overflow: hidden;
 }
 
 .footer-clean {
