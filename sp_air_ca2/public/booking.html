@@ -24,7 +24,7 @@
             if (!token) {
                 // user not logged in
                 $("#nav-right-loggedin").hide()
-                window.location.href = "login.html";
+                window.location.href = "login";
             } else {
                 // user is logged in
                 $.ajax({
@@ -38,11 +38,11 @@
                     success: function (data) {
                         if (data.role == "admin") {
                             // if user is admin, show admin panel
-                            $("#admin-panel").html('<a href="adminpanel.html">Admin panel</a>');
+                            $("#admin-panel").html('<a href="adminpanel">Admin panel</a>');
                         } 
                         // if user has token, get user info
                         $("#username").html(data.username);
-                        $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile.html">' + data.username + '</a>');
+                        $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile">' + data.username + '</a>');
                         // alert(data.profile_pic_url)
                         var profile_pic_url = data.profile_pic_url;
                         // alert(pro)
@@ -78,7 +78,7 @@
                     },
                     error: function (data) {
                         // if the token is invalid, redirect to login page
-                        window.location.href = "http://localhost:3000/index.html";
+                        window.location.href = "http://localhost:3000/";
                     }
                 });
             };
@@ -180,6 +180,7 @@
                             setTimeout(function () {
                                 $("#shoppingcart-add-alert").html('');
                             }, 5000);
+                            window.location.href = "http://localhost:3000/";
                         },
                         error: function (data) {
                             $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Error adding flight booking, please try again!</div>');
@@ -210,25 +211,25 @@
     <nav>
         <div class="container-fluid navbar navbar-fixed-top">
             <div class="navbar-header">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="/">
                     <img id="brand" alt="Brand" src="images/brand.png" height="30px" width="50px">
                 </a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="active"><a href="index.html">Home</a></li>
+                <li class="active"><a href="/">Home</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
                 <li id="admin-panel"></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-btn">
-                <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <li><a href="register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="nav-right-loggedin">
-                <li id="nav-shoppingcart-item"><a href="shoppingcart.html"><span id="shoppingcart-count"></span><span
+                <li id="nav-shoppingcart-item"><a href="shoppingcart"><span id="shoppingcart-count"></span><span
                             class="glyphicon glyphicon-shopping-cart"></span> Shopping Cart</a></li>
                 <li id="nav-username-item"><span id="nav-username"></span></li>
-                <li id="nav-logout-btn"><a href="index.html"><span class="glyphicon glyphicon-log-in"></span><button
+                <li id="nav-logout-btn"><a href="/"><span class="glyphicon glyphicon-log-in"></span><button
                             id="logout-btn" class="btn-link">Log Out</button></a></li>
             </ul>
         </div>

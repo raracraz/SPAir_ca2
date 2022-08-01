@@ -8,7 +8,7 @@ const Flight = {
                 if (err) {
                     return callback(err);
                 } else {
-                    var query = "INSERT into flights (flightCode, aircraft, originAirport, destinationAirport, embarkDate, embarkTime, travelTime, price, flightseat_pic_url) values (?, ?, ?, ?, ?, ?, ?, ?);"
+                    var query = "INSERT into flights (flightCode, aircraft, originAirport, destinationAirport, embarkDate, embarkTime, travelTime, price, flightseat_pic_url) values (?, ?, ?, ?, ?, ?, ?, ?, ?);"
                     conn.query(query, [flightcode, aircraft, originAirport, destinationAirport, embarkDate, embarkTime, travelDate, price, flightseat_pic_url], (err, result) => {
                         conn.end()
                         if (err) {

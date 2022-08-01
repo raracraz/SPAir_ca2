@@ -441,7 +441,7 @@ app.post('/api/flights', verifyToken, (req, res, next) => {
     var embarkDate = req.body.embarkDate;
     var embarkTime = req.body.embarkTime;
     var travelTime = req.body.travelTime;
-    var flightseat_pic_url = "public\\images\\flt_0_flightseats.png";
+    var flightseat_pic_url = "public\\images\\flt_0_default.png";
     var price = req.body.price;
     try {
         Flight.insert(flightCode, aircraft, originAirport, destinationAirport, embarkDate, embarkTime, travelTime, price, flightseat_pic_url, (err, flightid) => {
@@ -1084,6 +1084,34 @@ app.get('/', (req, res, next) => {
 
 app.get('/adminpanel', (req, res, next) => {
     res.status(200).sendFile(path.join(__dirname, '../public/adminpanel.html'));
+})
+
+app.get('/booking', (req, res, next) => {
+    res.status(200).sendFile(path.join(__dirname, '../public/booking.html'));
+})
+
+app.get('/flightDetails', (req, res, next) => {
+    res.status(200).sendFile(path.join(__dirname, '../public/flightDetails.html'));
+})
+
+app.get('/login', (req, res, next) => {
+    res.status(200).sendFile(path.join(__dirname, '../public/login.html'));
+})
+
+app.get('/profile', (req, res, next) => {
+    res.status(200).sendFile(path.join(__dirname, '../public/profile.html'));
+})
+
+app.get('/register', (req, res, next) => {
+    res.status(200).sendFile(path.join(__dirname, '../public/register.html'));
+})
+
+app.get('/searchResult', (req, res, next) => {
+    res.status(200).sendFile(path.join(__dirname, '../public/searchResult.html'));
+})
+
+app.get('/shoppingcart', (req, res, next) => {
+    res.status(200).sendFile(path.join(__dirname, '../public/shoppingcart.html'));
 })
 
 module.exports = app;
