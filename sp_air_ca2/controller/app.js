@@ -491,7 +491,7 @@ app.get('/api/flights/:originAirport/:destinationAirport/:departDate/:returnDate
     var embarkDate = req.params.departDate;
     var returnDate = req.params.returnDate;
     var type = req.params.type;
-    console.log(originAirport, destinationAirport, embarkDate, returnDate, type);
+    // console.log(originAirport, destinationAirport, embarkDate, returnDate, type);
     try {
         if (type == "one_way") {
             Flight.getByOriginDestination(originAirport, destinationAirport, embarkDate, (err, result) => {

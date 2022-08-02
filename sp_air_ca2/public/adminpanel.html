@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="src/css/style.css">
 </head>
 
-<body>
+<body class="adminpanel-html-body">
     <nav>
         <div class="container-fluid navbar navbar-fixed-top">
             <div class="navbar-header">
@@ -1024,6 +1024,8 @@
                     if (data.role !== "admin") {
                         // if user is admin, show admin panel
                         window.location.href = "http://localhost:3000/login";
+                    } else {
+                        $('.adminpanel-html-body').css('visibility', 'visible');
                     }
                     $("#username").html(data.username);
                     $("#nav-username").html('<img id="profile-pic"> ' + '<a href="profile">' + data.username + '</a>');

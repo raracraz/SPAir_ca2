@@ -1014,6 +1014,10 @@ div.omrs-input-group {
     display: inline-block;
 }
 
+.adminpanel-html-body{
+    visibility: hidden;
+}
+
 .admin-panel-user{
     margin-top: 10%;
     margin-bottom: 5%;
