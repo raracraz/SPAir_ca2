@@ -21,10 +21,13 @@
         $(document).ready(function () {
             var token = localStorage.getItem('token');
             var userid = localStorage.getItem('userid');
+            var shoppingcart = localStorage.getItem('shoppingcart');
             if (!token) {
                 // user not logged in
                 $("#nav-right-loggedin").hide()
                 window.location.href = "login";
+            } else if (!shoppingcart){
+                window.location.href = "shoppingcart";
             } else {
                 // user is logged in
                 $.ajax({
@@ -91,10 +94,6 @@
             $("#booking-submit-btn").html(booking_btn_html).click(function () {
                 var userid = localStorage.getItem('userid');
                 var token = localStorage.getItem('token');
-                // var uri = window.location.search;
-                // var param = new URLSearchParams(uri);
-                // var flightid = param.get('flightid');
-                // var seatType = param.get('seatType');
                 // get the seat type and flight id from local storage
                 var shoppingcart = localStorage.getItem('shoppingcart');
                 var shoppingcart = JSON.parse(shoppingcart);
@@ -111,7 +110,7 @@
                     var nationality = $("#booking-nationality-input").val();
                     var age = $("#booking-age-input").val()
                     var fullname = firstname + " " + lastname
-                    // alert(age)
+
                     if (firstname == "") {
                         $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> First name cannot be empty, please try again!</div>');
                         $("#booking-firstname-label").addClass("omrs-input-danger");
@@ -166,6 +165,7 @@
                         "nationality": nationality,
                         "age": age
                     })
+                    
                     $.ajax({
                         type: "POST",
                         headers: {
@@ -179,8 +179,11 @@
                             $("#shoppingcart-add-alert").html('<div class="alert alert-success" role="alert"> Flight successfully booked</div>');
                             setTimeout(function () {
                                 $("#shoppingcart-add-alert").html('');
+                                // remove total price from local storage
+                                localStorage.removeItem('totalprice');
+                                window.location.href = "http://localhost:3000/";
                             }, 5000);
-                            window.location.href = "http://localhost:3000/";
+                            
                         },
                         error: function (data) {
                             $("#shoppingcart-add-alert").html('<div class="alert alert-danger" role="alert"> Error adding flight booking, please try again!</div>');
