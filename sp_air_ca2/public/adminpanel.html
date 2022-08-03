@@ -16,6 +16,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- link jquery -->
+    <!-- favicon -->
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
     <link rel="stylesheet" href="src/css/style.css">
@@ -69,6 +71,7 @@
                         <th scope="col">Role</th>
                         <th scope="col">Profile-pic</th>
                         <th scope="col">Created-at</th>
+                        <th scope="col">Edit</th>
                     </tr>
                 </thead>
                 <tbody id="admin-panel-user-items"></tbody>
@@ -309,6 +312,49 @@
                 </div>
             </div>
         </div>
+        <!-- modal for editing user information -->
+        <div class="modal fade" id="edit-user-modal" tabindex="-1" role="dialog" aria-labelledby="edit-user-modal-label"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="edit-user-modal-label">Edit User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <div class="form-group">
+                                <label for="edit-user-name">Name</label>
+                                <input type="text" class="form-control" id="edit-user-name" placeholder="Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-user-email">Email</label>
+                                <input type="text" class="form-control" id="edit-user-email" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-user-email">Contact</label>
+                                <input type="text" class="form-control" id="edit-user-contact" placeholder="Contact">
+                            </div>
+                            <!-- dropdown for selecting of roles: customer or admin -->
+                            <div class="form-group">
+                                <label for="edit-user-role">Role</label>
+                                <select class="form-control" id="edit-user-role">
+                                    <option value="Customer">Customer</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="edit-user-btn">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- modal for editing airport information -->
         <div class="modal fade" id="admin-panel-airport-edit-modal" tabindex="-1" role="dialog"
             aria-labelledby="edit-airport-modal-label" aria-hidden="true">
@@ -915,6 +961,50 @@
             </div>
         </div>
     </div>
+    <!-- modal to show error in editing users -->
+    <div class="modal fade" id="edit-user-error-modal" tabindex="-1" role="dialog"
+        aria-labelledby="edit-user-error-modal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="edit-promotion-error-modal-label">Error</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-error-body">
+                        <p>Error editing User!</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal to show success in editing users -->
+    <div class="modal fade" id="edit-user-success-modal" tabindex="-1" role="dialog"
+        aria-labelledby="edit-user-success-modal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="edit-user-success-modal-label">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-success-body">
+                        <p>User edited successfully!</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- modal to show error in editing promotions -->
     <div class="modal fade" id="edit-promotion-error-modal" tabindex="-1" role="dialog"
         aria-labelledby="edit-promotion-error-modal-label" aria-hidden="true">
@@ -1021,7 +1111,7 @@
                 success: function (data) {
                     // if user has token, get user info
                     // alert(JSON.stringify(data));
-                    if (data.role !== "admin") {
+                    if (data.role !== "Admin") {
                         // if user is admin, show admin panel
                         window.location.href = "http://localhost:3000/login";
                     } else {
@@ -1096,13 +1186,14 @@
                                 var profile_pic = user_profilepic.split("\\")[2];
                             }
                             var user_created_at = user.created_at;
-                            var user_item_html = '<tr>' + '<td scope="row">' + user.userid + '</td>' +
+                            var user_item_html = '<tr>' + '<td scope="row" class="admin-panel-user-item-userid">' + user.userid + '</td>' +
                                 '<td class="admin-panel-user-item-username">' + user_username + '</td>' +
                                 '<td class="admin-panel-user-item-email">' + user_email + '</td>' +
                                 '<td class="admin-panel-user-item-contact">' + user_contact + '</td>' +
                                 '<td class="admin-panel-user-item-role">' + user_role + '</td>' +
                                 '<td>' + '<a class="btn btn-success" href="images/' + profile_pic + '">Profile Pic</a>' + '</td>' +
                                 '<td>' + user_created_at + '</td>' +
+                                '<td class="admin-panel-user-item-edit">' + '<a class="btn btn-warning admin-panel-user-edit-btn" >Edit</a>' + '</td>' +
                                 '</tr>';
                             $("#admin-panel-user-items").append(user_item_html);
                             // if i == 10, break and display a button to load more users, 
@@ -1116,7 +1207,8 @@
                                 { "data": "contact" },
                                 { "data": "role" },
                                 { "data": "profile_pic" },
-                                { "data": "created_at" }
+                                { "data": "created_at" },
+                                { "data": "edit" }
                             ],
                         })
                     },
@@ -1311,6 +1403,49 @@
                 }
             )
         }
+        $(document).on("click", ".admin-panel-user-edit-btn", function () {
+            var userid = $(this).closest('tr').find('.admin-panel-user-item-userid').text(); 
+            var username = $(this).closest('tr').find('.admin-panel-user-item-username').text();
+            var email = $(this).closest('tr').find('.admin-panel-user-item-email').text();
+            var contact = $(this).closest('tr').find('.admin-panel-user-item-contact').text();
+            var role = $(this).closest('tr').find('.admin-panel-user-item-role').text();
+            $("#edit-user-name").val(username);
+            $("#edit-user-email").val(email);
+            $("#edit-user-contact").val(contact);
+            $("#edit-user-modal").modal("show");
+            $("#edit-user-btn").click(function () {
+                var username = $("#edit-user-name").val();
+                var email = $("#edit-user-email").val();
+                var contact = $("#edit-user-contact").val();
+                var role = $("#edit-user-role").val();
+                var user_data = {
+                    "username": username,
+                    "email": email,
+                    "contact": contact,
+                    "role": role
+                }
+                $.ajax(
+                    {
+                        url: "http://localhost:3000/api/user/admin/edit/" + userid,
+                        type: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + token,
+                        },
+                        contentType: "application/json",
+                        data: JSON.stringify(user_data),
+                        success: function (data) {
+                            $("#edit-user-modal").modal("hide");
+                            $("#edit-user-success-modal").modal("show");
+                            window.location.reload();
+                        },
+                        error: function (data) {
+                            $("#edit-user-error-modal").modal("show");
+                        }
+                    }
+                );
+            });
+        });
         $(document).on("click", ".admin-panel-airport-edit-btn", function () {
             var airport_id = $(this).closest('tr').find('.admin-panel-airport-item-id').text();
             var airport_country = $(this).closest('tr').find('.admin-panel-airport-item-username').text();

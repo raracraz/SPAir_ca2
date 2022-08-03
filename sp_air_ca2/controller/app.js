@@ -232,27 +232,21 @@ app.put('/api/user/admin/edit/:userid', verifyToken, (req, res, next) => {
     }
     var username = req.body.username;
     var email = req.body.email;
-    var password = req.body.password;
     var contact = req.body.contact;
     var role = req.body.role;
-    var profile_pic_url = req.body.profile_pic_url;
     try {
-        User.updateUser(userid, username, email, password, contact, role, profile_pic_url, (err, result) => {
+        User.updateUser(userid, username, email, contact, role, (err, result) => {
             if (err) {
+                console.log(err)
                 res.status(500).send(defaultErrMsg);
             } else {
                 if (result) {
                     var successmsg = {
                         "userid": result.userid,
-                        "username": result.username,
-                        "email": result.email,
-                        "contact": result.contact,
-                        "role": result.role,
-                        "profile_pic_url": result.profile_pic_url,
-                        "created_at": result.created_at,
                     };
                     res.status(200).send(successmsg);
                 } else {
+                    console.log(err)
                     res.status(404).send(defaultErrMsg);
                 }
             }
@@ -1100,10 +1094,12 @@ app.get('/api/promotions/promocode', (req, res, next) => {
     }
 })
 
+app.get('/favicon', (req, res) => {
+    res.status(200).sendFile(path.join(__dirname + '../../favicon.ico'));
+});
 
 app.get('/', (req, res, next) => {
-    console.log(req.params[0])
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    res.status(200).sendFile(path.join(__dirname, '../public/index.html'));
 })
 
 app.get('/adminpanel', (req, res, next) => {

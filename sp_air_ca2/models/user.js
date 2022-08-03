@@ -115,16 +115,15 @@ const User = {
             }
         );
     },
-    updateUser: function(userid, username, email, contact, password, role, profile_pic_url, callback) {
+    updateUser: function(userid, username, email, contact, role, callback) {
         var conn = dbconnect.getConnection();
         conn.connect(
             function(err){
                 if (err) {
                     return callback(err);
                 } else {
-                    var hashedPassword = crypto.createHash('sha256').update(password).digest('hex'); // new
-                    var query = "UPDATE users SET username = ?, email = ?, contact = ?, password = ?, role = ?, profile_pic_url = ? WHERE userid = ?;"
-                    conn.query(query, [username, email, contact, hashedPassword, role, profile_pic_url, userid], (err, result) => {
+                    var query = "UPDATE users SET username = ?, email = ?, contact = ?, role = ? WHERE userid = ?;"
+                    conn.query(query, [username, email, contact, role, userid], (err, result) => {
                         conn.end()
                         if (err) {
                             return callback(err, null);

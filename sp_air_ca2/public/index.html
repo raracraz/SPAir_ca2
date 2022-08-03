@@ -18,6 +18,8 @@
     <!-- link jquery -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+    <!-- favicon -->
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="src/css/style.css">
 </head>
@@ -169,7 +171,7 @@
                 },
                 contentType: "application/json",
                 success: function (data) {
-                    if (data.role == "admin") {
+                    if (data.role == "Admin") {
                         // if user is admin, show admin panel
                         $("#admin-panel").html('<a href="adminpanel">Admin panel</a>');
                     }
