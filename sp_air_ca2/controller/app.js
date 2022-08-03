@@ -714,12 +714,13 @@ app.post('/api/shoppingcart/:userid/:flightid', verifyToken, (req, res, next) =>
     var flightid = parseInt(req.params.flightid);
     var userid = parseInt(req.params.userid);
     var seatType = req.body.seatType;
+    var totalPrice = req.body.totalPrice;
     // var name = req.body.name;
     // var passport = req.body.passport;
     // var nationality = req.body.nationality;
     // var age = req.body.age;
     try {
-        Shoppingcart.insert(userid, flightid, seatType, (err, shoppingcartid) => {
+        Shoppingcart.insert(userid, flightid, seatType, totalPrice, (err, shoppingcartid) => {
             if (err) {
                 if (err.errno == 1048) {
                     console.log(err)
@@ -820,6 +821,27 @@ app.get('/api/getbooking/:userid', verifyToken, (req, res, next) => {
 })
 
 //promotions
+
+app.put('/api/promotions/cart/update/:cartid', verifyToken, (req, res, next) => {
+    var cartid = parseInt(req.params.cartid);
+    var totalPrice = parseInt(req.body.totalPrice);
+    try {
+        Shoppingcart.updateTotalPricePromotion(cartid, totalPrice, (err, result) => {
+            if (err) {
+                console.log(err)
+                res.status(500).send(defaultErrMsg)
+            } else {
+                if (result) {
+                    res.status(200).send(result)
+                } else {
+                    res.status(404).send({ "message": "No promotions found" })
+                }
+            }
+        })
+    } catch (e) {
+        res.status(500).send(defaultErrMsg)
+    }
+})
 
 app.post('/api/promotions/post', verifyToken, (req, res, next) => {
     var startdate = req.body.promotionstartdate;
@@ -1078,7 +1100,9 @@ app.get('/api/promotions/promocode', (req, res, next) => {
     }
 })
 
+
 app.get('/', (req, res, next) => {
+    console.log(req.params[0])
     res.sendFile(path.join(__dirname, '../public/index.html'));
 })
 
@@ -1112,6 +1136,21 @@ app.get('/searchResult', (req, res, next) => {
 
 app.get('/shoppingcart', (req, res, next) => {
     res.status(200).sendFile(path.join(__dirname, '../public/shoppingcart.html'));
+})
+
+app.get('/src/css/style.css', (req, res, next) => {
+    res.status(200).sendFile(path.join(__dirname, '../public/src/css/style.css'));
+})
+
+// send all files in image if requested
+app.get('/images/*', (req, res, next) => {
+    // console.log(req.params[0])
+    res.status(200).sendFile(path.join(__dirname, '../public/images/' + req.params[0]));
+})
+
+// if the user goes to a route that is not defined, send them to the 404 page
+app.get('*', (req, res) => {
+    res.status(200).sendFile(path.join(__dirname, '../public/404.html'));
 })
 
 module.exports = app;

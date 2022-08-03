@@ -202,9 +202,15 @@
                         contentType: "application/json",
                         success(data){
                             localStorage.removeItem('shoppingcart');
+                            localStorage.removeItem('totalprice');
                         }
                     })
                 }
+            });
+            $("#logout-btn").click(() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userid");
+                window.location.href = "/";
             });
         });
     </script>

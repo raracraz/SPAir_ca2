@@ -83,7 +83,7 @@
                                 localStorage.setItem('userid', data.userid);
                                 localStorage.setItem('token', data.token);
                                 // redirect to profile page
-                                window.location.href = "http://localhost:3000/profile.html";
+                                window.location.href = "http://localhost:3000/profile";
                             }
                         },
                         error: function (data) {
@@ -104,18 +104,18 @@
     <nav>
         <div class="container-fluid navbar navbar-fixed-top">
             <div class="navbar-header">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="index">
                     <img id="brand" alt="Brand" src="images/brand.png" height="30px" width="50px">
                 </a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="active"><a href="index.html">Home</a></li>
+                <li class="active"><a href="index">Home</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <li><a href="register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
             </ul>
         </div>
     </nav>
@@ -165,7 +165,7 @@
                                     <!-- reset password button -->
                                     <div class="col-md-6">
                                         <div id="reset-password-btn" class="form-group">
-                                            <a href="reset-password.html">Reset Password</a>
+                                            <a href="reset-password">Reset Password</a>
                                         </div>
                                     </div>
                                 </div>

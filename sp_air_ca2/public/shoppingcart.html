@@ -82,6 +82,7 @@
                                     // alert(JSON.stringify(item));
                                     // return msg
                                     // {"userid":1,"flightItemid":2,"seatType":"economy","OriginAirport":"Bangkok International Airport","DestinationAirport":"Kuala Lumpur Airport","embarkDate":"2022-12-26","travelTime":"6:50","price":"508"}
+                                    var cartid = item.cartid;
                                     var seatType = item.seatType;
                                     var OriginAirport = item.OriginAirport;
                                     var OriginCountry = item.OriginCountry;
@@ -93,28 +94,37 @@
                                     var travelTime = item.travelTime;
                                     var travelTimeHM = travelTime.split(":")[0] + " Hours " + travelTime.split(":")[1] + " Minutes";
                                     var price = item.price;
-                                    totalPrice += parseFloat(price);
+                                    var totalPrice = item.totalPrice;
+                                    // totalPrice += parseFloat(price);
                                     var totalTravelTimeMinutes = parseInt(travelTime.split(":")[1]) + (parseInt(travelTime.split(":")[0]) * 60);
                                     // add travel time to embark date to get reach date and time
                                     var reachDate = new Date(embarkDate + " " + embarkTime);
                                     var reachTime = new Date(reachDate.getTime() + totalTravelTimeMinutes * 60000);
                                     var reachDateandTime = reachDate.getFullYear() + "-" + (reachDate.getMonth() + 1) + "-" + reachDate.getDate() + " " + reachTime.getHours() + ":" + reachTime.getMinutes();
-                                    var returnhtml = '<div class="shoppingcart-item-box"><div class="shoppingcart-OriginCountry">' + OriginCountry + '</div><div class="shoppingcart-DestinationCountry">' + DestinationCountry + '</div><div class="shoppingcart-OriginAirport">' + OriginAirport + '</div><div class="shoppingcart-DestinationAirport">' + DestinationAirport + '</div><div class="shoppingcart-to-box"><span class="iconify shoppingcart-icon" data-icon="ion:airplane" id="flight-detail-plane-icon"></span></div><div class="shoppingcart-embarkDate">' + embarkDate + ' ' + embarkTime + '</div><div class="shoppingcart-travelTime">' + travelTimeHM + '</div><div class="shoppingcart-reachDate">' + reachDateandTime + '</div><div class="shoppingcart-flightCode">' + flightCode + '</div><div class="shoppingcart-seattype">' + seatType + ' seats</div><div class="shoppingcart-price">$ ' + price + '</div></div><label class="shoppingcart-promo-title">Promotion Code</label><div class="shoppingcart-addpromo"><input type="text"></input><button class="btn btn-success shoppingcart-promo-submit-btn">Go</button></div><span class="shopping-cart-promo-invalid-error"></span>';
+                                    var returnhtml = '<div class="shoppingcart-item-box"><div class="shoppingcart-OriginCountry">' + OriginCountry + '</div><div class="shoppingcart-DestinationCountry">' + DestinationCountry + '</div><div class="shoppingcart-OriginAirport">' + OriginAirport + '</div><div class="shoppingcart-DestinationAirport">' + DestinationAirport + '</div><div class="shoppingcart-to-box"><span class="iconify shoppingcart-icon" data-icon="ion:airplane" id="flight-detail-plane-icon"></span></div><div class="shoppingcart-embarkDate">' + embarkDate + ' ' + embarkTime + '</div><div class="shoppingcart-travelTime">' + travelTimeHM + '</div><div class="shoppingcart-reachDate">' + reachDateandTime + '</div><div class="shoppingcart-flightCode">' + flightCode + '</div><div class="shoppingcart-seattype">' + seatType + ' seats</div><div class="shoppingcart-price">$ ' + price + '</div></div><label class="shoppingcart-promo-title">Promotion Code</label><div class="shoppingcart-addpromo"><input type="text"></input><button class="btn btn-success shoppingcart-promo-submit-btn" value=' + cartid + '>Go</button></div><span class="shopping-cart-promo-invalid-error"></span>';
                                     $("#shoppingcart-items").append(returnhtml);
                                 }
-                                // set totalPrice to local storage
-                                if(localStorage.getItem("totalPrice") == null){
-                                    localStorage.setItem("totalPrice", totalPrice);
-                                }
-                                // get totalPrice from local storage
-                                $("#shoppingcart-booking-btn").html('<a class="shoppingcart-btn-text" href="booking">Proceed to payment details</a>').click(
-                                    function () {
-                                        localStorage.setItem('totalPrice', totalPrice);
-                                        localStorage.setItem('shoppingcart', JSON.stringify(data));
+                                $.ajax({
+                                    url: "http://localhost:3000/api/shoppingcart/" + userid,
+                                    type: "GET",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "Authorization": "Bearer " + token,
+                                    },
+                                    contentType: "application/json",
+                                    success: function (data) {
+                                        // alert(JSON.stringify(data));
+                                        var totalPrice = 0
+                                        for (var i = 0; i < data.length; i++) {
+                                            var item = data[i];
+                                            totalPrice += parseFloat(item.totalPrice);
+                                        }
+                                        $("#shoppingcart-total-price").html("$" + totalPrice);
                                     }
-                                );
+                                });
                                 $(document).on("click", ".shoppingcart-promo-submit-btn", function () {
                                     var promoCode = $(this).closest(".shoppingcart-addpromo").find("input").val();
+                                    var cartid = $(this).val();
                                     $.ajax({
                                         url: "http://localhost:3000/api/promotions/promocode/" + promoCode,
                                         type: "GET",
@@ -125,29 +135,29 @@
                                         success: function (data) {
                                             // if data is empty then promo code is invalid
                                             if (data.length == 0) {
-                                                // $(".shopping-cart-promo-invalid-error").html("<div class='alert alert-danger'>Promotion code is invalid</div>");
-                                                // only show the error message for the nearest .shoppingcart-promo-submit-btn element
                                                 $("#shoppingcart-promo-invalid-modal").modal("show");
                                             } else {
-                                                // if data is not empty, then promo code is valid
-                                                // get the total price from local storage and apply the discount to it
                                                 $("#shoppingcart-promo-success-modal").modal("show");
                                                 // alert(JSON.stringify(data));
-                                                var discountedprice = parseInt(price) - (parseInt(price) * (parseInt(data[0].discountoffered)/100));
-                                                alert(price + " " + discountedprice);
-                                                // update the total price in the shopping cart
-                                                // alert(discountedprice)
-                                                // $(".shoppingcart-item-box").closest(".shoppingcart-price").html("$ " + discountedprice);
-                                                
-                                                
-                                                // only append the discount to the nearest .shoppingcart-price element
-                                                // $(".shoppingcart-price").append('<div class="shoppingcart-discount">$ ' + discountedprice + '</div>');
+                                                var discountedprice = parseInt(price) - (parseInt(price) * (parseInt(data[0].discountoffered) / 100));
 
-                                                // $("#shoppingcart-total-price").val()
-                                                // get the total price from local storage and apply the discount to it
-                                                var totalPrice = localStorage.getItem('totalPrice');
                                                 totalPrice = totalPrice - price + discountedprice;
-                                                localStorage.setItem('totalPrice', totalPrice);
+                                                // get the cartid from the button that was pressed
+                                                $.ajax({
+                                                    url: "http://localhost:3000/api/promotions/cart/update/" + cartid,
+                                                    type: "PUT",
+                                                    headers: {
+                                                        "Content-Type": "application/json",
+                                                        "Authorization": "Bearer " + token,
+                                                    },
+                                                    contentType: "application/json",
+                                                    data: JSON.stringify({
+                                                        totalPrice: discountedprice,
+                                                    }),
+                                                    error: function (data) {
+                                                        alert(JSON.stringify(data));
+                                                    }
+                                                });
                                                 setTimeout(function () {
                                                     window.location.reload();
                                                 }, 3000);
@@ -174,8 +184,29 @@
                 localStorage.removeItem("userid");
                 window.location.href = "http://localhost:3000/searchResult?origin=" + originAirport + "&destination=" + destinationAirport + "&departureDate=" + departureDate + "&returnDate=" + returnDate + "&trip-type=" + type;
             });
-            var totalPrice = localStorage.getItem("totalPrice");
-            $("#shoppingcart-total-price").html("$ " + totalPrice);
+            $("#shoppingcart-booking-btn").html('<a class="shoppingcart-btn-text" href="booking">Proceed to payment details</a>').click(
+                function () {
+                    $.ajax({
+                        url: "http://localhost:3000/api/shoppingcart/" + userid,
+                        type: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + token,
+                        },
+                        contentType: "application/json",
+                        success: function (data) {
+                            // alert(JSON.stringify(data));
+                            var totalPrice = 0
+                            for (var i = 0; i < data.length; i++) {
+                                var item = data[i];
+                                totalPrice += parseFloat(item.totalPrice);
+                            }
+                            localStorage.setItem('totalPrice', totalPrice);
+                            localStorage.setItem('shoppingcart', JSON.stringify(data));
+                        }
+                    });
+                }
+            );
         });
     </script>
 </head>

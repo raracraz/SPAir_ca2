@@ -142,6 +142,7 @@
                                 // window.location.href = "booking.html?flightid=" + flightid + "&seatType=economy";
                                 var bodyData = JSON.stringify({
                                     "seatType": "economy",
+                                    "totalPrice": price,
                                 });
                                 $.ajax({
                                     url: "http://localhost:3000/api/shoppingcart/" + userid + "/" + flightid,
@@ -157,8 +158,9 @@
                                         $("#flight-booking-result-msg").html("<div class='alert alert-success' role='alert'>Added to shopping cart</div>");
                                         setTimeout(function () {
                                             $("#flight-booking-result-msg").html("");
-                                            window.location.reload();
+                                            
                                         }, 5000);
+                                        window.location.reload();
                                     },
                                     error: function (data) {
                                         $("#flight-booking-result-msg").html("<div class='alert alert-danger' role='alert'>Error adding to shopping cart</div>");
