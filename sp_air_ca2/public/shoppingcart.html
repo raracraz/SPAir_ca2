@@ -138,7 +138,16 @@
                                             if (data.length == 0) {
                                                 $("#shoppingcart-promo-invalid-modal").modal("show");
                                             } else {
-                                                $("#shoppingcart-promo-success-modal").modal("show");
+                                                // get current date
+                                                var currentDate = new Date();
+                                                var currentDateString = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate();
+                                                var promotionenddate = (data[0].promotionenddate).split("-")[2] + "-" + (data[0].promotionenddate).split("-")[1] + "-" + (data[0].promotionenddate).split("-")[0];
+                                                // if current date is greater then data.promotionenddate then promo code is invalid
+                                                if (new Date(currentDateString) > new Date(promotionenddate)) {
+                                                    $("#shoppingcart-promo-invalid-modal").modal("show");
+                                                } else {
+                                                    $("#shoppingcart-promo-success-modal").modal("show");
+                                                }
                                                 // alert(JSON.stringify(data));
                                                 var discountedprice = parseInt(price) - (parseInt(price) * (parseInt(data[0].discountoffered) / 100));
 

@@ -197,7 +197,7 @@ app.get('/api/users', verifyToken, (req, res, next) => {
     // check the logged in user is the same as the userid provided
     // console.log(req.decodedToken.role)
     // console.log(req.decodedToken)
-    if (req.decodedToken.role !== "admin") {
+    if (req.decodedToken.role !== "Admin") {
         res.status(403).send({ "message": "You are not authorized to view this user" });
         return;
     }
@@ -226,7 +226,7 @@ app.put('/api/user/admin/edit/:userid', verifyToken, (req, res, next) => {
         return;
     }
     // check the logged in user is the same as the userid provided
-    if (req.decodedToken.role !== "admin") {
+    if (req.decodedToken.role !== "Admin") {
         res.status(403).send({ "message": "You are not authorized to edit this user" });
         return;
     }
@@ -368,7 +368,7 @@ app.put('/api/airport/put/:airportid', verifyToken, (req, res, next) => {
         return;
     }
     // check the logged in user is the same as the userid provided
-    if (req.decodedToken.role !== "admin") {
+    if (req.decodedToken.role !== "Admin") {
         res.status(403).send({ "message": "You are not authorized to edit this airport" });
         return;
     }
@@ -403,7 +403,7 @@ app.delete('/api/airport/delete/:airportid', verifyToken, (req, res, next) => {
         return;
     }
     // check the logged in user is the same as the userid provided
-    if (req.decodedToken.role !== "admin") {
+    if (req.decodedToken.role !== "Admin") {
         res.status(403).send({ "message": "You are not authorized to delete this airport" });
         return;
     }
@@ -602,7 +602,7 @@ app.put('/api/flights/put/:flightid', verifyToken, (req, res, next) => {
         return;
     }
     // check the logged in user is the same as the userid provided
-    if (req.decodedToken.role !== "admin") {
+    if (req.decodedToken.role !== "Admin") {
         res.status(403).send({ "message": "You are not authorized to delete this airport" });
         return;
     }
@@ -643,7 +643,7 @@ app.put('/api/flights/flightseatpic/post/:flightid', verifyToken, uploadFlightse
         return;
     }
     // check the logged in user is the same as the userid provided
-    if (req.decodedToken.role !== "admin") {
+    if (req.decodedToken.role !== "Admin") {
         res.status(403).send({ "message": "You are not authorized to delete this airport" });
         return;
     }
@@ -680,7 +680,7 @@ app.delete('/api/flights/delete/:flightid', verifyToken, (req, res, next) => {
         return;
     }
     // check the logged in user is the same as the userid provided
-    if (req.decodedToken.role !== "admin") {
+    if (req.decodedToken.role !== "Admin") {
         res.status(403).send({ "message": "You are not authorized to delete this airport" });
         return;
     }
@@ -894,7 +894,7 @@ app.delete('/api/promotions/delete/:promotionid', verifyToken, (req, res, next) 
         return;
     }
     // check the logged in user is the same as the userid provided
-    if (req.decodedToken.role !== "admin") {
+    if (req.decodedToken.role !== "Admin") {
         res.status(403).send({ "message": "You are not authorized to delete this airport" });
         return;
     }
@@ -989,13 +989,13 @@ app.put('/api/promotions/update/:promotionid', verifyToken, (req, res, next) => 
     var enddate = req.body.promotionenddate;
     var discount = parseInt(req.body.discountoffered);
     var promotioncode = req.body.promotioncode;
-    console.log(promotionid + " " + startdate + " " + enddate + " " + discount + " " + promotioncode)
+    // console.log(promotionid + " " + startdate + " " + enddate + " " + discount + " " + promotioncode)
     if (isNaN(promotionid)) {
         res.status(400).send({ "message": "Invalid promotionid" });
         return;
     }
     // check the logged in user is the same as the userid provided
-    if (req.decodedToken.role !== "admin") {
+    if (req.decodedToken.role !== "Admin") {
         res.status(403).send({ "message": "You are not authorized to update this airport" });
         return;
     }
@@ -1030,7 +1030,7 @@ app.put('/api/promotiontnsf/update/:promotiontnsfid', verifyToken, (req, res, ne
         return;
     }
     // check the logged in user is the same as the userid provided
-    if (req.decodedToken.role !== "admin") {
+    if (req.decodedToken.role !== "Admin") {
         res.status(403).send({ "message": "You are not authorized to update this airport" });
         return;
     }

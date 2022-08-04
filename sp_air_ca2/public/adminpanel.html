@@ -1114,6 +1114,7 @@
                     if (data.role !== "Admin") {
                         // if user is admin, show admin panel
                         window.location.href = "http://localhost:3000/login";
+                        return
                     } else {
                         $('.adminpanel-html-body').css('visibility', 'visible');
                     }
@@ -1214,7 +1215,7 @@
                     },
                     error: function (data) {
                         // if the token is invalid, redirect to login page
-                        // alert(JSON.stringify(data))
+                        // alert(JSON.stringify(data) + "user")
                         window.location.href = "http://localhost:3000/login";
                     }
                 }
@@ -1268,7 +1269,7 @@
                     },
                     error: function (data) {
                         // if the token is invalid, redirect to login page
-                        // alert(JSON.stringify(data))
+                        // alert(JSON.stringify(data) + "airport")
                         window.location.href = "http://localhost:3000/login";
                     }
                 });
